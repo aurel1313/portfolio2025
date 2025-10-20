@@ -2,12 +2,13 @@ import { View, Text, Button } from "react-native";
 import { TextInput } from "react-native";
 import { GoogleGenAI } from "@google/genai";
 import { useState } from "react";
+import { BASE_URL } from "@/utils/utils";
 export default function BotScreen() {
   const [message, setMessage] = useState("");
   const [response, setResponse] = useState("");
  
   const botFunction = async () => {
-    const res = await fetch("http://localhost:5000/gemini", {
+    const res = await fetch(`${BASE_URL}/gemini`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -16,6 +17,17 @@ export default function BotScreen() {
     });
     const data = await res.json();
     console.log(data);
+    if(data.response.includes(`${BASE_URL}/cv`)){
+      const link =document.createElement('a');
+      link.href = data.response.match(/(http|https):\/\/[^\s]+/)[0];
+      link.download = 'CVDevFullstackAurelienFabre.pdf';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      return;
+    }else{
+      console.log("No CV link found in the response.");
+    }
     setResponse(data.response);
   };
   return (

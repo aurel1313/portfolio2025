@@ -1,0 +1,12 @@
+{
+    "name": "my-project",
+    "version": "1.0.0",
+    "scripts": {
+        "start": "concurrently \"npm run start:front-end\" \"npm run start:back-end\"",
+        "start:front-end": "cd front-end && npm start",
+        "start:back-end": "cd back-end && nodemon server.js"
+    },
+    "devDependencies": {
+        "concurrently": "^9.2.1"
+    }
+}
