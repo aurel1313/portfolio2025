@@ -6,45 +6,131 @@ import { BASE_URL } from "@/utils/utils";
 export default function BotScreen() {
   const [message, setMessage] = useState("");
   const [response, setResponse] = useState("");
- 
+  const [errorResponse, setErrorResponse] = useState(""); // État pour bloquer l'interface pendant l'appel
+  const [isLoading, setIsLoading] = useState(false);
+
   const botFunction = async () => {
-    const res = await fetch(`${BASE_URL}/gemini`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ message }),
-    });
-    const data = await res.json();
-    console.log(data);
-    if(data.response.includes(`${BASE_URL}/cv`)){
-      const link =document.createElement('a');
-      link.href = data.response.match(/(http|https):\/\/[^\s]+/)[0];
-      link.download = 'CVDevFullstackAurelienFabre.pdf';
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-      return;
-    }else{
-      console.log("No CV link found in the response.");
+    // Réinitialiser les états et bloquer l'interface
+    setResponse("");
+    setErrorResponse("");
+    setIsLoading(true);
+    const currentMessage = message.toLowerCase(); // Utiliser une variable locale en minuscules
+    try {
+      const res = await fetch(`${BASE_URL}/gemini`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        }, // Envoyer le message de l'utilisateur
+        body: JSON.stringify({ message: currentMessage }),
+      });
+
+      const data = await res.json();
+      console.log("Réponse du serveur:", data); // --- GESTION DES ERREURS DU SERVEUR ---
+
+      if (data.error) {
+        setErrorResponse(
+          data.response || "Une erreur inconnue est survenue côté serveur."
+        );
+        setResponse(""); // Assurez-vous qu'il n'y a pas de réponse normale affichée
+        return;
+      } // --- GESTION DU TÉLÉCHARGEMENT CV (Adapté pour le DOM) ---
+
+      if (data.link) {
+        // Cette logique utilise les APIs du DOM (navigateur) pour le téléchargement.
+        const link = document.createElement("a");
+        link.href = data.link; // Utiliser data.link directement
+        link.download = "CVDevFullstackAurelienFabre.pdf";
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        setResponse("Le téléchargement de votre CV a démarré.");
+        return;
+      } // --- LOGIQUE DE PARSING MULTI-TOURS (VOTRE CODE) ---
+
+      let responseToDisplay = data.response; // Réponse brute du serveur
+
+      if (
+        currentMessage.includes("projet") &&
+        responseToDisplay.includes("Tour 1") &&
+        responseToDisplay.includes("Tour 2")
+      ) {
+        // C'est le premier tour (question initiale). On affiche le Tour 1.
+        const tour1Response = responseToDisplay.split(
+          "--------------------------"
+        )[0];
+        responseToDisplay = tour1Response.trim();
+      } else if (
+        currentMessage.includes("@") &&
+        responseToDisplay.includes("Tour 2")
+      ) {
+        // C'est le deuxième tour (soumission de l'e-mail). On affiche le Tour 2.
+        const tour2Response = responseToDisplay.split(
+          "--------------------------"
+        )[1];
+        responseToDisplay = tour2Response.trim();
+      } // Si aucune condition n'est remplie (ex: simple follow-up ou message non pertinent),
+      // on affiche la réponse brute (elle sera le Tour 2 ou un message par défaut).
+      //les tours suivants peuvent être gérés ici si nécessaire
+
+      if (data.response) {
+        setResponse(data.response);
+      }
+    } catch (error) {
+      console.error("Erreur lors de la requête API:", error);
+      setErrorResponse(`Erreur de connexion : ${error.message}`);
+    } finally {
+      setIsLoading(false); // Débloquer l'interface
     }
-    setResponse(data.response);
   };
+
   return (
-    <div className="flex flex-col border mx-auto w-1/2 relative z-40  bg-white min-h-auto items-center justify-start pt-20 pb-10 ">
-      <h1 className="font-bold">Bot Screen</h1>
-      <Text className="m-4 p-2 w-1/2  border-gray-300 rounded-md">
-        Posez une question au bot concernant mon profil ou mes projets.
-      </Text>
-      <TextInput
-        className="border border-gray-300 rounded-md p-2 m-4 w-1/2"
+    <div className="flex flex-col border mx-auto w-1/2 relative z-40 bg-white min-h-auto items-center justify-start pt-20 pb-10 rounded-xl shadow-lg">
+           {" "}
+      <h1 className="font-bold text-2xl text-indigo-700 mb-4">Assistant IA</h1> 
+         {" "}
+      <p className="m-4 p-2 w-3/4 text-center text-gray-600">
+                Posez une question au bot concernant mon profil ou mes projets.
+             {" "}
+      </p>
+                  {/* Zone de Saisie (TextInput remplacé par input) */}
+           {" "}
+      <input
+        className="border border-gray-300 rounded-lg p-3 m-4 w-3/4 focus:border-indigo-500 transition duration-150"
+        type="text"
         placeholder="Type a message..."
-        onChangeText={setMessage}
+        onChange={(e) => setMessage(e.target.value)} // Adapté pour l'événement onChange standard
+        value={message} // Contrôler l'input
+        disabled={isLoading}
       />
-      <Button title="Send" onPress={botFunction} />
-      <Text className="m-4 p-2 w-1/2 border border-gray-300 rounded-md">
-        Response: {response}
-      </Text>
+                  {/* Bouton d'Envoi (Button remplacé par button) */}     {" "}
+      <button
+        className="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 px-4 rounded-lg transition duration-200 disabled:opacity-50"
+        onClick={botFunction} // Adapté pour l'événement onClick standard
+        disabled={isLoading || message.trim() === ""}
+      >
+                {isLoading ? "Envoi en cours..." : "Send"}     {" "}
+      </button>
+                  {/* Zone de Réponse (View et Text remplacés par div et p) */} 
+         {" "}
+      <div className="m-4 p-4 w-3/4 border border-gray-300 rounded-lg bg-gray-50 min-h-[100px] mt-8 shadow-inner">
+                <p className="font-semibold text-gray-800 mb-2">Réponse:</p>   
+           {" "}
+        {isLoading ? (
+          <p className="text-indigo-500 animate-pulse">Chargement...</p>
+        ) : (
+          <p className="text-gray-700 whitespace-pre-wrap">
+            {response || "En attente de votre question..."}
+          </p>
+        )}
+             {" "}
+      </div>
+                  {/* Zone d'Erreur (Text remplacé par p) */}     {" "}
+      {errorResponse && (
+        <p className="m-4 p-2 w-3/4 border border-red-400 rounded-md text-red-700 bg-red-50">
+                    Erreur: {errorResponse}       {" "}
+        </p>
+      )}
+         {" "}
     </div>
   );
 }

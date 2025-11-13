@@ -1,15 +1,24 @@
 import Card from "@/components/card/card";
 import { Text, View } from "react-native";
 import { useEffect, useState } from "react";
+import { BASE_URL } from "@/utils/utils";
 export default function AboutScreen() {
   //get vercel api for fetch data
   const [url, setUrl] = useState<string | null>(null);
   const projetStage = async () => {
-    const res = await fetch("http://localhost:5000/projetStage");
+    const res = await fetch(`${BASE_URL}/projetStage`,{
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+
+      },
+
+    });
     const data = await res.json();
 
     //get url for project stage
     let url = data.latestDeployments;
+   
  const first = data.latestDeployments[0];
 
     // puis la première URL d'alias (souvent la bonne)
@@ -19,7 +28,7 @@ export default function AboutScreen() {
       setUrl(projectUrl);
    
   };
-
+  
   useEffect(() => {
     projetStage();
   }, []);
@@ -78,7 +87,7 @@ export default function AboutScreen() {
             ) : (
               <Text>Loading...</Text>
             )}
-           
+            
           </View>
         </View>
       </View>

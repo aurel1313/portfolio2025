@@ -1,4 +1,11 @@
 // localhost ou production en fonction de l'environnement
 
-export const BASE_URL = process.env.NODE_ENV === 'development' ? 'http://localhost:5000' : 'https://mon-portfolio-backend.onrender.com';
 
+
+const isLocalhost = process.env.NODE_ENV === "development";
+
+const BASE_URL = isLocalhost
+  ? "http://localhost:5000"
+  : "https://portfolio2025back.vercel.app";
+
+  export { BASE_URL };

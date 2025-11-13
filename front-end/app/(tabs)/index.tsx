@@ -9,9 +9,25 @@ import { Link } from "expo-router";
 import { Text, View } from "react-native";
 import AboutScreen from "./about";
 import BotScreen from "../views/bot/bot";
+import AvisScreen from "../views/avis/avis";
+import { useState } from "react";
+import Modal from "@/components/modal/Modal";
 export default function HomeScreen() {
+  const[loading, setLoading]=useState(false);
+  //timeout for 3 seconds
+  setTimeout(() => {
+    setLoading(true);
+  }, 3000);
   return (
+    
     <View className="flex flex-col z-0 overflow-scroll h-full  bg-white ">
+       {!loading && 
+       <div className=" fixed top-0 left-0 w-full h-full flex items-center justify-center backdrop-blur-sm z-50 overflow-auto ">
+         <Modal content="le site est en cours de construction...." className=" "/>
+       </div>
+       
+       
+       }
       <div className="flex flex-row  bg-white justify-around h-1/2 ">
         <div className=" flex  flex-col items-start p-10   ">
           <Text className="text-xl font-thin poppins-light leading-tight">
@@ -43,6 +59,8 @@ export default function HomeScreen() {
       </div>
       <AboutScreen />
       <BotScreen />
+      <AvisScreen />
+
     <View/>
     </View>
   );
