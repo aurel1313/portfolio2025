@@ -11,7 +11,7 @@ import nodemailer from 'nodemailer'
 // Utiliser require pour les environnements CommonJS (si nécessaire), sinon garder import
 // Remplacer les imports par des require est complexe avec le code fourni,
 // nous allons conserver la syntaxe ESM (import/export) standard pour Node.js moderne.
-
+import avis from "./avis/avis.js";
 dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -193,8 +193,7 @@ app.post("/gemini", async (req, res) => {
   }
 });
 
-// Le reste de votre code (Vercel, app.listen, etc.) reste inchangé...
-
+app.use("/avis",avis);
 app.listen(PORT, () => {
   console.log(`🚀 Server running on http://localhost:${PORT}`);
 });

@@ -37,9 +37,9 @@ export default function AboutScreen() {
     <>
       <View
         id="about"
-        className="p-10 flex flex-col items-center w-3/4 justify-center mx-auto"
+        className="p-10 flex flex-col items-end w-full justify-end mx-auto"
       >
-        <Text className="text-2xl font-bold mb-4 ">A propos de moi</Text>
+        <Text className="text-2xl font-bold mb-4  ">A propos de moi</Text>
         <Text className="text-gray-500 font-sans text-xl text-wrap w-1/2 p-4">
           Passionné par le développement web et mobile, je suis constamment à la
           recherche de nouvelles technologies et de défis à relever. Mon

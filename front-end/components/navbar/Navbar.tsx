@@ -1,9 +1,11 @@
-import { StyleSheet } from "react-native";
+import { Platform, StyleSheet } from "react-native";
 export const Navbar = () => {
+  const isWeb = Platform.OS === "web" ;
   return (
-    <div style={styles.content} className="p-4 flex-row justify-between items-center">
-      <p>Portfolio</p>
-      <div style={styles.container}>
+
+    <div  className="">
+      
+      <div className={isWeb ? "flex flex-row justify-around items-center":" flex flex-col mx-auto"}>
         <a href="/(tabs)/index">Accueil</a>
         <a href="#about" className="ml-4">A propos</a>
         <a href="/(tabs)/projets" className="ml-4">Projets</a>
