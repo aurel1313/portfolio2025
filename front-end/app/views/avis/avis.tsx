@@ -1,5 +1,5 @@
 import { useForm, SubmitHandler, Controller, set } from "react-hook-form";
-import { Button, TouchableOpacity } from "react-native";
+import { Button, TextInput, TouchableOpacity } from "react-native";
 import { Text } from "react-native";
 import { BASE_URL } from "@/utils/utils";
 import { View } from "react-native";
@@ -61,17 +61,17 @@ export default function AvisScreen() {
   }
   getAvis();
   return (
-    <div className="p-10 flex flex-col items-center w-3/4 justify-center mx-auto">
+    <View className="p-10 flex flex-col items-center w-3/4 justify-center mx-auto">
       <Text className="text-2xl font-bold mb-4 ">Laissez votre avis</Text>
       <Controller
       name="email"
         control={control}
         render={({ field }) => (
-          <input
+          <TextInput
             className="border border-gray-300 rounded-lg p-3 m-4 w-3/4 focus:border-indigo-500 transition duration-150"
             placeholder="Votre email"
             {...field}
-            name="email"
+           
           />
         )}
       />
@@ -79,13 +79,15 @@ export default function AvisScreen() {
         name="comment"
         control={control}
         render={({ field }) => (
-          <textarea
+          <TextInput
             className="border border-gray-300 rounded-lg p-3 m-4 w-3/4 focus:border-indigo-500 transition duration-150"
             placeholder="Laissez votre avis ici..."
             {...field}
-            name="comment"
+           
           />
+          
         )}
+        
       />
    <TouchableOpacity onPress={handleSubmit(onSubmit)} className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded">
         <Text className="text-white">Envoyer l'avis</Text>
@@ -108,6 +110,6 @@ export default function AvisScreen() {
         )}
         {error ? <Text className="text-red-600">{error}</Text> : null}
       </View>
-    </div>
+    </View>
   );
 }

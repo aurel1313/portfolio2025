@@ -77,60 +77,60 @@ export default function BotScreen() {
       }
     } catch (error) {
       console.error("Erreur lors de la requête API:", error);
-      setErrorResponse(`Erreur de connexion : ${error.message}`);
+      //setErrorResponse(`Erreur de connexion : ${error.message}`);
     } finally {
       setIsLoading(false); // Débloquer l'interface
     }
   };
 
   return (
-    <div className="flex flex-col border mx-auto w-1/2 relative z-40 bg-white min-h-auto items-center justify-start pt-20 pb-10 rounded-xl shadow-lg">
-           {" "}
-      <h1 className="font-bold text-2xl text-indigo-700 mb-4">Assistant IA</h1> 
-         {" "}
-      <p className="m-4 p-2 w-3/4 text-center text-gray-600">
-                Posez une question au bot concernant mon profil ou mes projets.
-             {" "}
-      </p>
-                  {/* Zone de Saisie (TextInput remplacé par input) */}
-           {" "}
-      <input
+    <View className="flex flex-col border mx-auto w-1/2 relative z-40 bg-white min-h-auto items-center justify-start pt-20 pb-10 rounded-xl shadow-lg">
+
+      <Text className="font-bold text-2xl text-indigo-700 mb-4">
+        Assistant IA
+      </Text>
+
+      <Text className="m-4 p-2 w-3/4 text-center text-gray-600">
+        Posez une question au bot concernant mon profil ou mes projets.
+      </Text>
+
+      <TextInput
         className="border border-gray-300 rounded-lg p-3 m-4 w-3/4 focus:border-indigo-500 transition duration-150"
-        type="text"
         placeholder="Type a message..."
-        onChange={(e) => setMessage(e.target.value)} // Adapté pour l'événement onChange standard
-        value={message} // Contrôler l'input
-        disabled={isLoading}
+        onChange={(e) => setMessage(e.target.value)}
+        value={message}
       />
-                  {/* Bouton d'Envoi (Button remplacé par button) */}     {" "}
-      <button
-        className="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 px-4 rounded-lg transition duration-200 disabled:opacity-50"
-        onClick={botFunction} // Adapté pour l'événement onClick standard
+
+      <Button
+        onPress={botFunction}
         disabled={isLoading || message.trim() === ""}
-      >
-                {isLoading ? "Envoi en cours..." : "Send"}     {" "}
-      </button>
-                  {/* Zone de Réponse (View et Text remplacés par div et p) */} 
-         {" "}
-      <div className="m-4 p-4 w-3/4 border border-gray-300 rounded-lg bg-gray-50 min-h-[100px] mt-8 shadow-inner">
-                <p className="font-semibold text-gray-800 mb-2">Réponse:</p>   
-           {" "}
+        title={isLoading ? "Envoi en cours..." : "Send"}
+      />
+
+      <View className="m-4 p-4 w-3/4 border border-gray-300 rounded-lg bg-gray-50 min-h-[100px] mt-8 shadow-inner">
+
+        <Text className="font-semibold text-gray-800 mb-2">
+          Réponse:
+        </Text>
+
         {isLoading ? (
-          <p className="text-indigo-500 animate-pulse">Chargement...</p>
+          <Text className="text-indigo-500 animate-pulse">
+            Chargement...
+          </Text>
         ) : (
-          <p className="text-gray-700 whitespace-pre-wrap">
+          <Text className="text-gray-700 whitespace-pre-wrap">
             {response || "En attente de votre question..."}
-          </p>
+          </Text>
         )}
-             {" "}
-      </div>
-                  {/* Zone d'Erreur (Text remplacé par p) */}     {" "}
-      {errorResponse && (
-        <p className="m-4 p-2 w-3/4 border border-red-400 rounded-md text-red-700 bg-red-50">
-                    Erreur: {errorResponse}       {" "}
-        </p>
-      )}
-         {" "}
-    </div>
+
+      </View>
+
+      {errorResponse ? (
+        <Text className="m-4 p-2 w-3/4 border border-red-400 rounded-md text-red-700 bg-red-50">
+          Erreur: {errorResponse}
+        </Text>
+      ) : null}
+
+    </View>
   );
 }

@@ -37,10 +37,10 @@ export default function AboutScreen() {
     <>
       <View
         id="about"
-        className="p-10 flex flex-col items-end w-full justify-end mx-auto"
+        className=" flex flex-col items-end w-full justify-end  max-sm:items-center max-sm:justify-center max-sm:mt-10 max-sm:mb-10 "
       >
         <Text className="text-2xl font-bold mb-4  ">A propos de moi</Text>
-        <Text className="text-gray-500 font-sans text-xl text-wrap w-1/2 p-4">
+        <Text className="text-gray-500 font-sans text-xl text-wrap w-1/2 p-4 max-sm:font-sans max-sm:w-full max-sm:text-center max-sm:text-[16px]"> 
           Passionné par le développement web et mobile, je suis constamment à la
           recherche de nouvelles technologies et de défis à relever. Mon
           objectif est de créer des applications performantes, intuitives et
@@ -52,7 +52,7 @@ export default function AboutScreen() {
         className="p-10 flex flex-col items-center w-3/4 justify-center mx-auto"
       >
         <Text className="text-2xl font-bold mb-4 ">Projets</Text>
-        <Text className="text-gray-500 font-sans text-xl font-light text-wrap w-1/2 p-4">
+        <Text className="text-gray-500 font-sans text-xl font-light text-wrap w-1/2 p-4 max-sm:w-full max-sm:text-center max-sm:text-[16px] max-sm:font-sans max-sm:mb-10">
           Developpeur avec 3 ans d'experience, je transforme les idées en
           solutions digitales innovantes et performantes
         </Text>

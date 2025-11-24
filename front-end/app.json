@@ -8,6 +8,7 @@
     "scheme": "portfolio",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
+    "jsEngine": "hermes",
     "ios": {
       "supportsTablet": true
     },
@@ -25,7 +26,15 @@
     "web": {
       "output": "static",
       "favicon": "./assets/images/favicon.png",
-      "bundler": "metro"
+      "dangerous":{
+        "allowedDangerousSources":{
+          "betterErrors": true
+        }
+      },
+      "bundler": "metro",
+      "meta": {
+        "viewport": "width=device-width, initial-scale=1.0"
+      }
     },
     "plugins": [
       "expo-router",
