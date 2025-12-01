@@ -10,7 +10,8 @@
     "mariadb": "^3.4.5",
     "nodemailer": "^7.0.10",
     "nodemon": "^3.1.10",
-    "pg": "^8.16.3"
+    "pg": "^8.16.3",
+    "xss": "^1.0.15"
   },
   "type": "module",
   "scripts": {

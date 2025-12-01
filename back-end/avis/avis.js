@@ -1,14 +1,18 @@
 import express from "express";
 import { Router } from "express";
 import { pool } from "../db.js";
+import xss from "xss";
 const router = Router();
 
 router.post("/", async (req, res) => {
   try {
     const { comment, email } = req.body;
+    const sanitizedComment = xss(comment);
+    const sanitizedEmail = xss(email);
+    //nettoyage des inputs pour eviter les attaques xss
     await pool.query("INSERT INTO avis (avis, email) VALUES ($1, $2)", [
-      comment,
-      email,
+      sanitizedComment,
+      sanitizedEmail,
     ]);
 
     console.log("Nouveau avis reçu :", { comment, email });
@@ -35,7 +39,11 @@ router.post("/", async (req, res) => {
 });
 router.get("/", async (req, res) => {
   try {
+    const preparedQuery = "SELECT * FROM avis";
+
     const result = await pool.query("SELECT * FROM avis");
+    
+   
     res.status(200).json(result.rows);
   } catch (error) {
     console.error("Erreur lors de la récupération des avis :", error);
