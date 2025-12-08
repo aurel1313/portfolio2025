@@ -6,14 +6,19 @@ import { GoogleGenAI } from "@google/genai";
 import { Vercel } from "@vercel/sdk";
 import path from "path";
 import { fileURLToPath } from "url";
-import { BASE_URL } from "./utils/utils.js";
+import { BASE_URL, FRONT_URL } from "./utils/utils.js";
 import nodemailer from 'nodemailer'
+import jwt from "jsonwebtoken";
+import crypto from "crypto";
 // Utiliser require pour les environnements CommonJS (si nécessaire), sinon garder import
 // Remplacer les imports par des require est complexe avec le code fourni,
 // nous allons conserver la syntaxe ESM (import/export) standard pour Node.js moderne.
 import avis from "./avis/avis.js";
+import { isDevelopment } from "./utils/utils.js";
+ const magicStore = new Map();
 dotenv.config();
 const app = express();
+
 const PORT = process.env.PORT || 5000;
 const apiKey = process.env.API_GEMINI;
 
@@ -125,8 +130,13 @@ Ne donne jamais le login sans avoir validé une adresse e-mail correcte.
    
     //si email dans le message
     if (isEmail(message.trim())) {
-       console.log(isEmail(message));
-       //envoie du mail avec le login//
+      const token = crypto.randomBytes(16).toString('hex');
+      const tokenHash = crypto.createHash('sha256').update(token).digest('hex');
+      const tokenExpiry = Date.now() + 3600000; // 1 heure
+   // Stockage en mémoire pour l'exemple
+      magicStore.set(tokenHash, { email: message.trim(), expires: tokenExpiry });
+     const magicLink = `${BASE_URL}/auth/login?token=${token}&email=${encodeURIComponent(message.trim())}`;
+       //envoie du mail avec le login// 
         const transporter = nodemailer.createTransport({
         service: 'gmail',
         auth: {
@@ -136,14 +146,15 @@ Ne donne jamais le login sans avoir validé une adresse e-mail correcte.
         from: process.env.EMAIL_USER,
         to: message.trim(),
         subject: 'Votre login pour le projet Taekna',
-        text: `Bonjour,\n\nVoici le login pour accéder au projet Taekna : ${LOGIN_SECRET}\n\nCordialement,\nL'équipe Taekna`
+        //lien magique pour le login et mdp
+        html: `<p>Bonjour,</p><p>Cliquez sur le lien suivant pour accéder au projet Taekna : <a href="${magicLink}">Accéder au projet Taekna</a></p><p>Cordialement,<br/>L'équipe Taekna</p>`
 
       });
       const mailOptions = {
         from: process.env.EMAIL_USER,
         to: isEmail(message.trim()) ? message.trim() : '',
         subject: 'Votre login pour le projet Taekna',
-        text: `Bonjour,\n\nVoici le login pour accéder au projet Taekna : ${LOGIN_SECRET}\n et le mot de passe: ${LOGIN_PASSWORD}\nCordialement,\nL'équipe Taekna`
+        html: `<p>Bonjour,</p><p>Cliquez sur le lien suivant pour accéder au projet Taekna : <a href="${magicLink}">Accéder au projet Taekna</a></p><p>Cordialement,<br/>L'équipe Taekna</p>`
       };
     
       //envoi de l'email
@@ -161,7 +172,22 @@ Ne donne jamais le login sans avoir validé une adresse e-mail correcte.
     );
   }
 };
+app.get("/auth/login", (req, res) => {
+  const { token, email } = req.query;
+  if (!token || !email) {
+    return res.status(400).send("Lien magique invalide.");
+  }
+  const tokenHash = crypto.createHash('sha256').update(token).digest('hex');
+  const storedData = magicStore.get(tokenHash);
+  if (!storedData || storedData.email !== email || storedData.expires < Date.now()) {
+    return res.status(400).send("Lien magique invalide ou expiré.");
+  }
+  storedData.used = true;
+  const jwtToken = jwt.sign({ email }, process.env.JWT_SECRET, { expiresIn: '1h' });
+  res.cookie("session_token", jwtToken, { httpOnly: true, secure: !isDevelopment, maxAge: 3600000 });
 
+  res.send("Authentification réussie ! Vous pouvez maintenant accéder au projet Taekna.");
+});
 app.post("/gemini", async (req, res) => {
   try {
     const { message } = req.body; // --- Logique existante du CV ---
