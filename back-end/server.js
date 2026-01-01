@@ -7,7 +7,7 @@ import { Vercel } from "@vercel/sdk";
 import path from "path";
 import { fileURLToPath } from "url";
 import { BASE_URL, FRONT_URL } from "./utils/utils.js";
-import nodemailer from 'nodemailer'
+import nodemailer from "nodemailer";
 import jwt from "jsonwebtoken";
 import crypto from "crypto";
 // Utiliser require pour les environnements CommonJS (si nécessaire), sinon garder import
@@ -15,7 +15,7 @@ import crypto from "crypto";
 // nous allons conserver la syntaxe ESM (import/export) standard pour Node.js moderne.
 import avis from "./avis/avis.js";
 import { isDevelopment } from "./utils/utils.js";
- const magicStore = new Map();
+const magicStore = new Map();
 dotenv.config();
 const app = express();
 
@@ -37,8 +37,8 @@ app.use(bodyParser.json());
 
 // --- GESTION DE LA SESSION DE CHAT GLOBALE ---
 let chatSession = null;
-const LOGIN_SECRET = process.env.LOGIN_SECRET // Le login défini dans le backend
-const LOGIN_PASSWORD = process.env.LOGIN_PASSWORD // Le mot de passe défini dans le backend
+const LOGIN_SECRET = process.env.LOGIN_SECRET; // Le login défini dans le backend
+const LOGIN_PASSWORD = process.env.LOGIN_PASSWORD; // Le mot de passe défini dans le backend
 
 const isEmail = (str) => {
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -107,7 +107,7 @@ Ne donne jamais le login sans avoir validé une adresse e-mail correcte.
     // FAKER la réponse du Tour 2 pour satisfaire la logique de parsing du front-end
     const fakeResponse2 = "[Tour 2] (En attente d'e-mail)";
     //si email dans le message
-     
+
     // Retourner la réponse complète, le front-end doit afficher le Tour 1
     return (
       response1Text.trim() + "\n--------------------------\n" + fakeResponse2
@@ -127,42 +127,46 @@ Ne donne jamais le login sans avoir validé une adresse e-mail correcte.
 
     // FAKER la réponse du Tour 1 pour satisfaire la logique de parsing du front-end
     const fakeResponse1 = "[Tour 1] (Déjà affiché)";
-   
+
     //si email dans le message
     if (isEmail(message.trim())) {
-      const token = crypto.randomBytes(16).toString('hex');
-      const tokenHash = crypto.createHash('sha256').update(token).digest('hex');
+      const token = crypto.randomBytes(16).toString("hex");
+      const tokenHash = crypto.createHash("sha256").update(token).digest("hex");
       const tokenExpiry = Date.now() + 3600000; // 1 heure
-   // Stockage en mémoire pour l'exemple
-      magicStore.set(tokenHash, { email: message.trim(), expires: tokenExpiry });
-     const magicLink = `${BASE_URL}/auth/login?token=${token}&email=${encodeURIComponent(message.trim())}`;
-       //envoie du mail avec le login// 
-        const transporter = nodemailer.createTransport({
-        service: 'gmail',
+      // Stockage en mémoire pour l'exemple
+      magicStore.set(tokenHash, {
+        email: message.trim(),
+        expires: tokenExpiry,
+      });
+      const magicLink = `${BASE_URL}/auth/login?token=${token}&email=${encodeURIComponent(
+        message.trim()
+      )}`;
+      //envoie du mail avec le login//
+      const transporter = nodemailer.createTransport({
+        service: "gmail",
         auth: {
-            user: process.env.EMAIL_USER,
-            pass: process.env.EMAIL_PASS
+          user: process.env.EMAIL_USER,
+          pass: process.env.EMAIL_PASS,
         },
         from: process.env.EMAIL_USER,
         to: message.trim(),
-        subject: 'Votre login pour le projet Taekna',
+        subject: "Votre login pour le projet Taekna",
         //lien magique pour le login et mdp
-        html: `<p>Bonjour,</p><p>Cliquez sur le lien suivant pour accéder au projet Taekna : <a href="${magicLink}">Accéder au projet Taekna</a></p><p>Cordialement,<br/>L'équipe Taekna</p>`
-
+        html: `<p>Bonjour,</p><p>Cliquez sur le lien suivant pour accéder au projet Taekna : <a href="${magicLink}">Accéder au projet Taekna</a></p><p>Cordialement,<br/>L'équipe Taekna</p>`,
       });
       const mailOptions = {
         from: process.env.EMAIL_USER,
-        to: isEmail(message.trim()) ? message.trim() : '',
-        subject: 'Votre login pour le projet Taekna',
-        html: `<p>Bonjour,</p><p>Cliquez sur le lien suivant pour accéder au projet Taekna : <a href="${magicLink}">Accéder au projet Taekna</a></p><p>Cordialement,<br/>L'équipe Taekna</p>`
+        to: isEmail(message.trim()) ? message.trim() : "",
+        subject: "Votre login pour le projet Taekna",
+        html: `<p>Bonjour,</p><p>Cliquez sur le lien suivant pour accéder au projet Taekna : <a href="${magicLink}">Accéder au projet Taekna</a></p><p>Cordialement,<br/>L'équipe Taekna</p>`,
       };
-    
+
       //envoi de l'email
-      transporter.sendMail(mailOptions, function(error, info){
+      transporter.sendMail(mailOptions, function (error, info) {
         if (error) {
-            console.log(error);
+          console.log(error);
         } else {
-            console.log('Email sent: ' + info.response);
+          console.log("Email sent: " + info.response);
         }
       });
     }
@@ -177,28 +181,52 @@ app.get("/auth/login", (req, res) => {
   if (!token || !email) {
     return res.status(400).send("Lien magique invalide.");
   }
-  const tokenHash = crypto.createHash('sha256').update(token).digest('hex');
+  const tokenHash = crypto.createHash("sha256").update(token).digest("hex");
   const storedData = magicStore.get(tokenHash);
-  if (!storedData || storedData.email !== email || storedData.expires < Date.now()) {
+  if (
+    !storedData ||
+    storedData.email !== email ||
+    storedData.expires < Date.now()
+  ) {
     return res.status(400).send("Lien magique invalide ou expiré.");
   }
   storedData.used = true;
-  const jwtToken = jwt.sign({ email }, process.env.JWT_SECRET, { expiresIn: '1h' });
-  res.cookie("session_token", jwtToken, { httpOnly: true, secure: !isDevelopment, maxAge: 3600000 });
+  const jwtToken = jwt.sign({ email }, process.env.JWT_SECRET, {
+    expiresIn: "1h",
+  });
+  res.cookie("session_token", jwtToken, {
+    httpOnly: true,
+    secure: !isDevelopment,
+    maxAge: 3600000,
+  });
 
-  res.send("Authentification réussie ! Vous pouvez maintenant accéder au projet Taekna.");
+  res.send(
+    "Authentification réussie ! Vous pouvez maintenant accéder au projet Taekna."
+  );
 });
 app.post("/gemini", async (req, res) => {
   try {
     const { message } = req.body; // --- Logique existante du CV ---
-
-    if (message.includes("CV")) {
+   
+    if (message.includes("cv")) {
       // ... (Logique CV inchangée)
+     
       const systemInstructions = ai.chats.create({
-        /* ... */
+        model: "gemini-2.5-flash",
+        history: [
+          {
+            role: "model",
+            parts: [
+              {
+                text: `Tu es un assistant qui aide les utilisateurs à obtenir le CV d'Aurélien Fabre, développeur fullstack.
+Lorsque l'utilisateur demande le CV, tu dois lui fournir un lien de téléchargement direct vers le CV hébergé sur le serveur.`,
+              },
+            ],
+          },
+        ],
       });
       const result = await systemInstructions.sendMessage({ message: message }); // Retourne un objet link pour le téléchargement
-      res.json({ response: result.text, link: `${BASE_URL}/cv` });
+      res.json({ response: result.text, link: `${BASE_URL}/CVDevFullstackAurelienFabre.pdf` });
     }
     // --- Logique PROJET/LOGIN (Conversation Multi-tours) ---
     else if (message.includes("projet") || chatSession) {
@@ -219,7 +247,7 @@ app.post("/gemini", async (req, res) => {
   }
 });
 
-app.use("/avis",avis);
+app.use("/avis", avis);
 app.listen(PORT, () => {
   console.log(`🚀 Server running on http://localhost:${PORT}`);
 });
