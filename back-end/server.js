@@ -14,6 +14,7 @@ import crypto from "crypto";
 // Remplacer les imports par des require est complexe avec le code fourni,
 // nous allons conserver la syntaxe ESM (import/export) standard pour Node.js moderne.
 import avis from "./avis/avis.js";
+import contact from "./contact/contact.js";
 import { isDevelopment } from "./utils/utils.js";
 const magicStore = new Map();
 dotenv.config();
@@ -248,6 +249,7 @@ Lorsque l'utilisateur demande le CV, tu dois lui fournir un lien de télécharge
 });
 
 app.use("/avis", avis);
+app.use("/contact", contact);
 app.listen(PORT, () => {
   console.log(`🚀 Server running on http://localhost:${PORT}`);
 });

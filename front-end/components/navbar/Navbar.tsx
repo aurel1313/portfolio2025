@@ -1,18 +1,22 @@
-import { Platform, StyleSheet, View } from "react-native";
+import { Platform, StyleSheet, View,Text } from "react-native";
 export const Navbar = () => {
-  const isWeb = Platform.OS === "web" ;
+
   return (
 
     <View  className="">
       
-      <View className={isWeb ? "flex flex-row justify-around items-center":" flex flex-col mx-auto"}>
-        <a href="/(tabs)/index">Accueil</a>
+      <View className={ "bg-white flex flex-row justify-end mr-5 items-center p-4 max-sm:text-[14px] " } >
+        <View className="mr-auto text-bold text-lg  ">
+        <Text>Portfolio</Text>
+        </View>
+        <a href="#home">Accueil</a>
         <a href="#about" className="ml-4">A propos</a>
-        <a href="/(tabs)/projets" className="ml-4">Projets</a>
-        <a href="/(tabs)/blog" className="ml-4">Competences</a>
-        <a href="/(tabs)/profile" className="ml-4">Contact</a>
+        <a href="#projects" className="ml-4">Projets</a>
+        <a href="#skills" className="ml-4">Competences</a>
+        <a href="#contact" className="ml-4">Contact</a>
 
       </View>
+      <View className="border-b-2 border-gray-200 "></View>
     </View>
   );
 };

@@ -8,6 +8,7 @@ import { useColorScheme } from '@/hooks/use-color-scheme';
 import {Platform} from 'react-native'
 import { Navbar } from '@/components/navbar/Navbar';
 import '../../global.css'
+import Banner from '@/components/banner/banner';
 export default function TabLayout() {
   const colorScheme = useColorScheme();
    const isMobile =Platform.OS === 'ios' || Platform.OS === 'android'
@@ -35,6 +36,7 @@ export default function TabLayout() {
       />
     </Tabs>
     :<>
+    <Banner text="Le site est en cours de construction" />
     <Navbar/>
     <Stack screenOptions={{ headerShown: false }}>
       <Stack.Screen name="index"  />

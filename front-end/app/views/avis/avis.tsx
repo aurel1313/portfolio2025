@@ -3,7 +3,7 @@ import { Button, TextInput, TouchableOpacity } from "react-native";
 import { Text } from "react-native";
 import { BASE_URL } from "@/utils/utils";
 import { View } from "react-native";
-import { useState } from "react";
+import { use, useState,useEffect } from "react";
 
 export default function AvisScreen() {
   //espace commentaire  pour les avis des clients
@@ -59,7 +59,10 @@ export default function AvisScreen() {
     
    setAvisList(avis);
   }
-  getAvis();
+  
+  useEffect(() => {
+    getAvis();
+  }, [responseMessage]);
   return (
     <View className="p-10 flex flex-col items-center w-3/4 justify-center mx-auto">
       <Text className="text-2xl font-bold mb-4 ">Laissez votre avis</Text>

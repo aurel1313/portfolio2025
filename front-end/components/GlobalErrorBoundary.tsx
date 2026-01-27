@@ -40,7 +40,7 @@ export class GlobalErrorBoundary extends Component<Props, State> {
       error: error,
       errorInfo: errorInfo
     });
-    console.error("GlobalErrorBoundary a capturé :", error);
+   
   }
 
   resetError = () => {

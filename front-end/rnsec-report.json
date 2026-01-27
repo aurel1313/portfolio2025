@@ -1,0 +1,43 @@
+{
+  "findings": [
+    {
+      "ruleId": "NO_REQUEST_TIMEOUT",
+      "description": "fetch() without timeout configuration",
+      "severity": "MEDIUM",
+      "filePath": "C:/Users/Admin/Desktop/portfolio/front-end/app/views/avis/avis.tsx",
+      "line": 35,
+      "snippet": "    console.log(data);\r\n    // ici vous pouvez ajouter la logique pour envoyer l'avis au serveur\r\n    const commentData = await fetch(`${BASE_URL}/avis`, {\r\n      method: \"POST\",\r\n      headers: {\r",
+      "suggestion": "Add timeout using AbortSignal: const controller = new AbortController(); setTimeout(() => controller.abort(), 30000);"
+    },
+    {
+      "ruleId": "NO_REQUEST_TIMEOUT",
+      "description": "fetch() without timeout configuration",
+      "severity": "MEDIUM",
+      "filePath": "C:/Users/Admin/Desktop/portfolio/front-end/app/views/avis/avis.tsx",
+      "line": 52,
+      "snippet": "  }\r\n  const getAvis = async () => {\r\n    const avisData = await fetch(`${BASE_URL}/avis`, {\r\n      method: \"GET\",\r\n      headers: {\r",
+      "suggestion": "Add timeout using AbortSignal: const controller = new AbortController(); setTimeout(() => controller.abort(), 30000);"
+    },
+    {
+      "ruleId": "NO_REQUEST_TIMEOUT",
+      "description": "fetch() without timeout configuration",
+      "severity": "MEDIUM",
+      "filePath": "C:/Users/Admin/Desktop/portfolio/front-end/app/views/bot/bot.tsx",
+      "line": 20,
+      "snippet": "    const currentMessage = message.toLowerCase(); // Utiliser une variable locale en minuscules\r\n    try {\r\n      const res = await fetch(`${BASE_URL}/gemini`, {\r\n        method: \"POST\",\r\n        headers: {\r",
+      "suggestion": "Add timeout using AbortSignal: const controller = new AbortController(); setTimeout(() => controller.abort(), 30000);"
+    },
+    {
+      "ruleId": "INSECURE_DESERIALIZATION",
+      "description": "JSON.parse() on potentially untrusted data without validation",
+      "severity": "MEDIUM",
+      "filePath": "C:/Users/Admin/Desktop/portfolio/front-end/app/views/bot/bot.tsx",
+      "line": 34,
+      "snippet": "        try {\r\n          // ÉTAPE 1 : On parse la première couche (le champ 'response')\r\n          let parsedData = JSON.parse(data.response);\r\n\r\n          // ÉTAPE 2 : On regarde si 'message' à l'intérieur est aussi une string JSON\r",
+      "suggestion": "Validate JSON structure and data types before parsing untrusted input. Use schema validation libraries like Zod or Yup."
+    }
+  ],
+  "scannedFiles": 35,
+  "duration": 235,
+  "timestamp": "2026-01-01T12:21:24.669Z"
+}

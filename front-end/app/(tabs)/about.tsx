@@ -6,29 +6,36 @@ export default function AboutScreen() {
   //get vercel api for fetch data
   const [url, setUrl] = useState<string | null>(null);
   const projetStage = async () => {
-    const res = await fetch(`${BASE_URL}/projetStage`,{
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
+    const controller = new AbortController();
+    try {
+      const res = await fetch(`${BASE_URL}/projetStage`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        signal: controller.signal,
+      });
+      const data = await res.json();
 
-      },
+      //get url for project stage
+      let url = data.latestDeployments;
 
-    });
-    const data = await res.json();
+      const first = data.latestDeployments[0];
 
-    //get url for project stage
-    let url = data.latestDeployments;
-   
- const first = data.latestDeployments[0];
-
-    // puis la première URL d'alias (souvent la bonne)
-    const projectUrl = first.alias[0].startsWith("http")
-      ? first.alias[0]
-      : `https://${first.alias[0]}`;
+      // puis la première URL d'alias (souvent la bonne)
+      const projectUrl = first.alias[0].startsWith("http")
+        ? first.alias[0]
+        : `https://${first.alias[0]}`;
       setUrl(projectUrl);
-   
+    } catch (error) {
+      if(error instanceof DOMException && error.name === 'AbortError') {
+        console.log('Requête annulée');
+      } else {
+        throw error;
+      }
+    }
   };
-  
+
   useEffect(() => {
     projetStage();
   }, []);
@@ -37,10 +44,10 @@ export default function AboutScreen() {
     <>
       <View
         id="about"
-        className=" flex flex-col items-end w-full justify-end  max-sm:items-center max-sm:justify-center max-sm:mt-10 max-sm:mb-10 "
+        className=" bg-slate-100 p-4 flex flex-col items-center text-[20px] w-full justify-center  max-sm:items-center max-sm:justify-center max-sm:mt-10 max-sm:mb-10 "
       >
         <Text className="text-2xl font-bold mb-4  ">A propos de moi</Text>
-        <Text className="text-gray-500 font-sans text-xl text-wrap w-1/2 p-4 max-sm:font-sans max-sm:w-full max-sm:text-center max-sm:text-[16px]"> 
+        <Text className="text-gray-500 font-sans text-xl text-wrap w-1/2  p-4 max-sm:font-sans max-sm:w-full max-sm:text-center max-sm:text-[16px] ">
           Passionné par le développement web et mobile, je suis constamment à la
           recherche de nouvelles technologies et de défis à relever. Mon
           objectif est de créer des applications performantes, intuitives et
@@ -48,8 +55,8 @@ export default function AboutScreen() {
         </Text>
       </View>
       <View
-        id="projets"
-        className="p-10 flex flex-col items-center w-3/4 justify-center mx-auto"
+        id="projects"
+        className="p-10 flex flex-col items-center w-3/4  mx-auto"
       >
         <Text className="text-2xl font-bold mb-4 ">Projets</Text>
         <Text className="text-gray-500 font-sans text-xl font-light text-wrap w-1/2 p-4 max-sm:w-full max-sm:text-center max-sm:text-[16px] max-sm:font-sans max-sm:mb-10">
@@ -57,7 +64,7 @@ export default function AboutScreen() {
           solutions digitales innovantes et performantes
         </Text>
         {/* card des competences */}
-        <View className="grid grid-cols-1 md:grid-cols-3 gap-4 w-full">
+        <View className="flex flex-row place-content-center w-1/3   max-sm:flex max-sm:flex-col max-sm:items-center max-sm:justify-center ">
           <Card
             title="developpement front-end"
             description="Création d'interfaces utilisateur modernes et réactives avec React, Vue.js et les dernières technologies web.."
@@ -72,9 +79,9 @@ export default function AboutScreen() {
           />
         </View>
         {/* preview du projet avec l'url recupere */}
-        <View className="mt-10 w-full">
+        <View className="mt-10 w-full  relative   max-sm:w-full max-sm:p-4 ">
           <Text className="text-2xl font-bold mb-4 ">Projet de stage</Text>
-          <View className="border border-gray-300 rounded-lg p-4">
+          <View className=" w-full  rounded-lg p-4">
             <Text className="text-gray-500 font-sans text-xl font-light text-wrap w-full p-4">
               Voici un aperçu de mon projet de stage déployé sur Vercel :
             </Text>
@@ -87,7 +94,6 @@ export default function AboutScreen() {
             ) : (
               <Text>Loading...</Text>
             )}
-            
           </View>
         </View>
       </View>
