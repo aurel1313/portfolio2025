@@ -76,14 +76,14 @@ export default function HomeScreen() {
     <View className="flex flex-col z-0 overflow-scroll h-full  bg-white ">
       
       <View className={`flex flex-col items-center mx-auto w-auto  ${isMobile ? 'w-full' : 'w-auto'} bg-white p-4  md:flex-row md:items-center md:justify-center md:p-4  md:mt-10  md:mb-10  `}>
-        <View className="  flex  flex-col items-center  w-2/3  md:items-center md:text-center md:p-4 md-w-full     ">
+        <View className="  flex  flex-col items-center w-1/2  md:items-center md:text-center md:p-4 md-w-full     ">
           <Text className="text-base font-extrabold poppins-light leading-tight ">
             Bonjour, je suis{"\n"}
             <Text>Aurélien Fabre</Text>
           </Text>
 
           <View className="  w-full items-center  h-auto md:flex md md:justify-center   ">
-            <View className="flex-row flex flex-wrap mt-4 w-1/2    md:flex-col md:justify-center md:w-1/6 md:pb-4 md:items-center  ">
+            <View className="flex-col justify-center  items-center flex flex-wrap mt-4     md:flex md:flex-row md:flex-wrap md:justify-center md:w-1/2 md:pb-4 md:items-center  ">
               {words.map((word, wordIndex) => {
                 return (
                   // Wrap each word in a View to keep letters together so they don't break mid-word

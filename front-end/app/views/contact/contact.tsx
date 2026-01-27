@@ -59,7 +59,7 @@ export default function Contact() {
       </Text>
 
       {/* LAYOUT PRINCIPAL */}
-      <View className="flex flex-col gap-8 md:flex-row md:justify-center  ">
+      <View className="flex flex-col gap-8  md:flex-row md:justify-around md:items-start md:gap-4 md:px-10 ">
         
         {/* INFOS CONTACT */}
         <View className="w-auto flex items-center   md:w-1/2">
