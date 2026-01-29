@@ -20,6 +20,7 @@ import Animated, {
   withDelay,
 } from "react-native-reanimated";
 import Contact from "../views/contact/contact";
+import Footer from "@/components/footer/Footer";
 
 export default function HomeScreen() {
   const [loading, setLoading] = useState(false);
@@ -129,7 +130,7 @@ export default function HomeScreen() {
         <AvisScreen />
         <Contact />
       </View>
-
+        <Footer />
       <View />
     </View>
   );
