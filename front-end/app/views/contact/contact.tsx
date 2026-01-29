@@ -89,7 +89,7 @@ export default function Contact() {
               </Link>
             </View>
             <View className="border border-gray-200 rounded-md p-2 w-fit mt-2">
-              <Link href="https://www.linkedin.com/in/aurelien-fabre-4b7245244/">
+              <Link href="https://www.linkedin.com/in/aurelien-fabre/">
                 <Linkedin size={22} />
               </Link>
             </View>

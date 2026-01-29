@@ -16,8 +16,8 @@ router.post("/", async (req, res) => {
       port: 587,
       secure: false,
       auth: {
-        user: "aurelienfabre439@gmail.com", // generated ethereal user
-        pass: "ddvormzikhzymwob", // generated ethereal password
+        user: process.env.EMAIL_USER, // generated ethereal user
+        pass: process.env.EMAIL_PASS2, // generated ethereal password
       },
     });
     const mailOptions = {
