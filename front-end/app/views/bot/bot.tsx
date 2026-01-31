@@ -9,7 +9,7 @@ export default function BotScreen() {
   const [response, setResponse] = useState("");
   const [errorResponse, setErrorResponse] = useState(""); // État pour bloquer l'interface pendant l'appel
   const [isLoading, setIsLoading] = useState(false);
-
+  const[remainingRequests,setRemainingRequests]=useState<number | null>(null);
   const botFunction = async () => {
     // Réinitialiser les états et bloquer l'interface
     setResponse("");
@@ -33,7 +33,7 @@ export default function BotScreen() {
         try {
           // ÉTAPE 1 : On parse la première couche (le champ 'response')
           let parsedData = JSON.parse(data.response);
-
+          //setRemainingRequests(data.remainingRequests || null);
           // ÉTAPE 2 : On regarde si 'message' à l'intérieur est aussi une string JSON
           if (
             parsedData.error &&
@@ -148,7 +148,11 @@ export default function BotScreen() {
         disabled={isLoading || message.trim() === ""}
         title={isLoading ? "Envoi en cours..." : "Send"}
       />
-
+      {/*remainingRequests !== null && (
+        <Text className="text-sm text-gray-500 mt-2">
+          Requêtes restantes aujourd'hui: {remainingRequests}
+        </Text>
+      )*/}
       <View className="m-4 p-4 w-3/4 border border-gray-300 rounded-lg bg-gray-50 min-h-[100px] mt-8 shadow-inner">
         <Text className="font-semibold text-gray-800 mb-2">Réponse:</Text>
 

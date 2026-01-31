@@ -5,6 +5,7 @@ import { BASE_URL } from "@/utils/utils";
 export default function AboutScreen() {
   //get vercel api for fetch data
   const [url, setUrl] = useState<string | null>(null);
+
   const projetStage = async () => {
     const controller = new AbortController();
     try {
