@@ -43,7 +43,6 @@ export default function HomeScreen() {
   // Largeur auto : 80% de l'écran, max 320px
   const cardWidth = Math.min(width * 0.8, 320);
 
-
   const AnimatedLetter = ({
     char,
     index,
@@ -65,64 +64,111 @@ export default function HomeScreen() {
       // Delay based on the global index (totalIndex) to keep the wave effect consistent
       color.value = withDelay(
         totalIndex * 50, // Reduced delay for smoother wave
-        withRepeat(withTiming("#000000", { duration: 500 }), -1, true)
+        withRepeat(withTiming("#000000", { duration: 500 }), -1, true),
       );
     }, []);
 
-    return <Animated.Text style={animatedStyle}  >{char}</Animated.Text>;
+    return <Animated.Text style={animatedStyle}>{char}</Animated.Text>;
   };
   let globaCharIndex = 0;
   const isMobile = Platform.OS === "ios" || Platform.OS === "android";
   return (
     <View className="flex flex-col z-0 overflow-scroll h-full  bg-white ">
-      
-      <View className={`flex flex-col items-center mx-auto w-auto  ${isMobile ? 'w-full' : 'w-auto'} bg-white p-4  md:flex-row md:items-center md:justify-center md:p-4  md:mt-10  md:mb-10  `}>
-        <View className="  flex  flex-col items-center w-1/2  md:items-center md:text-center md:p-4 md-w-full     ">
-          <Text className="text-base font-extrabold poppins-light leading-tight ">
-            Bonjour, je suis{"\n"}
-            <Text>Aurélien Fabre</Text>
+      <View
+        className="
+    bg-white
+    p-4
+    flex
+    flex-col
+    md:flex-row
+    md:items-center
+    md:justify-center
+    md:mt-10
+    md:mb-10
+    gap-10
+  "
+      >
+        {/* ===== TEXTE ===== */}
+        <View className="w-full md:w-1/2 md:text-center">
+          <Text className="text-base font-semibold">
+            Bonjour, je suis Aurélien Fabre
           </Text>
 
-          <View className="  w-full items-center  h-auto md:flex md md:justify-center   ">
-            <View className="flex-col justify-center  items-center flex flex-wrap mt-4     md:flex md:flex-row md:flex-wrap md:justify-center md:w-1/2 md:pb-4 md:items-center  ">
-              {words.map((word, wordIndex) => {
-                return (
-                  // Wrap each word in a View to keep letters together so they don't break mid-word
-                  <View key={wordIndex} className="flex-row items-end 
-                  ">
-                    {word.split("").map((char: string, charIndex: number) => {
-                      const currentIndex = globaCharIndex++;
-                      return (
-                        <AnimatedLetter
-                          key={`${wordIndex}-${charIndex}`}
-                          char={char}
-                          index={charIndex}
-                          totalIndex={currentIndex}
-                        
-                        />
-                      );
-                    })}
-                    {/* SPACE CHARACTER: This adds the necessary gap between words */}
-                    <Text className="text-base"> </Text>
-                  </View>
-                );
-              })}
+          <View className="w-full flex md:items-center">
+            <View
+              className="
+          w-full
+          flex-row
+          flex-wrap
+          mt-4
+          justify-start
+          md:justify-center
+        "
+            >
+              {words.map((word, wordIndex) => (
+                <View key={wordIndex} className="flex-row items-end">
+                  {word.split("").map((char, charIndex) => {
+                    const currentIndex = globaCharIndex++;
+                    return (
+                      <AnimatedLetter
+                        key={`${wordIndex}-${charIndex}`}
+                        char={char}
+                        index={charIndex}
+                        totalIndex={currentIndex}
+                      />
+                    );
+                  })}
+
+                  {/* espace entre les mots */}
+                  <Text className="text-base"> </Text>
+                </View>
+              ))}
             </View>
           </View>
         </View>
-        {
-          <View className="relative p-4   w-auto      ">
-            <View className=" absolute  top-2 left-2 w-80 h-56 bg-white rounded-xl shadow-md transform -rotate-3  max-sm:absolute max-sm:mr-10    " />
 
-            <View className="w-80 h-56 bg-white rounded-xl shadow-lg overflow-hidden transform rotate-1 hover:scale-105 transition-transform duration-300 ease-in-out  ">
-              <Image
-                source={require("../../assets/images/aurelien-fabre.jpg")}
-                className="w-full h-full object-cover  "
-                contentFit="cover"
-              />
-            </View>
+        {/* ===== IMAGE ===== */}
+        <View className="relative p-4">
+          {/* carte derrière */}
+          <View
+            className="
+        absolute
+        top-2
+        left-2
+        w-80
+        h-56
+        bg-white
+        rounded-xl
+        shadow-md
+        transform
+        -rotate-3
+      "
+          />
+
+          {/* image principale */}
+          <View
+            className="
+        w-80
+        h-56
+        bg-white
+        rounded-xl
+        shadow-lg
+        overflow-hidden
+        transform
+        rotate-1
+        hover:scale-105
+        transition-transform
+        duration-300
+        ease-in-out
+      "
+          >
+            <Image
+              source={require("../../assets/images/aurelien-fabre.jpg")}
+              className="w-full h-full object-cover"
+              contentFit="cover"
+            />
           </View>
-        }
+        </View>
       </View>
       <View className="  w-full h-auto mt-10   flex flex-col   items-center   ">
         <AboutScreen />
@@ -130,7 +176,7 @@ export default function HomeScreen() {
         <AvisScreen />
         <Contact />
       </View>
-        <Footer />
+      <Footer />
       <View />
     </View>
   );
