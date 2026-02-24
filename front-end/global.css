@@ -114,3 +114,13 @@ body {
   margin: 0;
   padding: 0;
 }
+
+.test {
+  background-color: #1a202c;
+}
+.dark-mode{
+  background: oklch(0.145 0 0);
+}
+.bg-muted{
+  background-color: #1a202c;
+}

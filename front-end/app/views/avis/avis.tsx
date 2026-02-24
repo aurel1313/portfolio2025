@@ -3,11 +3,11 @@ import { Button, TextInput, TouchableOpacity } from "react-native";
 import { Text } from "react-native";
 import { BASE_URL } from "@/utils/utils";
 import { View } from "react-native";
-import { use, useState,useEffect } from "react";
-
+import { use, useState, useEffect, useContext } from "react";
+import { ThemeContext } from "../../Context/Theme/Theme";
 export default function AvisScreen() {
   //espace commentaire  pour les avis des clients
-  const [responseMessage, setResponseMessage] =  useState("");
+  const [responseMessage, setResponseMessage] = useState("");
   type Avis = {
     id?: number;
     email: string;
@@ -17,7 +17,11 @@ export default function AvisScreen() {
 
   const [error, setError] = useState<string>("");
   const [avisList, setAvisList] = useState<Avis[]>([]);
-
+  const context = useContext(ThemeContext);
+  if (!context) {
+    throw new Error("Contact component must be used within a ThemeProvider");
+  }
+  const { theme } = context;
   const {
     control,
     handleSubmit,
@@ -29,7 +33,9 @@ export default function AvisScreen() {
     },
   });
 
-  const onSubmit: SubmitHandler<{ comment: string; email: string }> = async (data) => {
+  const onSubmit: SubmitHandler<{ comment: string; email: string }> = async (
+    data,
+  ) => {
     console.log(data);
     // ici vous pouvez ajouter la logique pour envoyer l'avis au serveur
     const commentData = await fetch(`${BASE_URL}/avis`, {
@@ -47,7 +53,7 @@ export default function AvisScreen() {
     if (result.messageFailed) {
       setError(result.messageFailed);
     }
-  }
+  };
   const getAvis = async () => {
     const avisData = await fetch(`${BASE_URL}/avis`, {
       method: "GET",
@@ -56,25 +62,30 @@ export default function AvisScreen() {
       },
     });
     const avis = await avisData.json();
-    
-   setAvisList(avis);
-  }
-  
+
+    setAvisList(avis);
+  };
+
   useEffect(() => {
     getAvis();
   }, [responseMessage]);
   return (
-    <View className="p-10 flex flex-col items-center w-3/4 justify-center mx-auto">
-      <Text className="text-2xl font-bold mb-4 ">Laissez votre avis</Text>
+    <View
+      className={`p-10 flex flex-col items-center md:w-1/2 justify-center mt-12 ${theme === "dark" ? "border border-gray-700 rounded-lg bg-gray-900" : "bg-white"}`}
+    >
+      <Text
+        className={`text-2xl font-bold mb-4 ${theme === "dark" ? "text-white" : "text-black"}`}
+      >
+        Laissez votre avis
+      </Text>
       <Controller
-      name="email"
+        name="email"
         control={control}
         render={({ field }) => (
           <TextInput
             className="border border-gray-300 rounded-lg p-3 m-4 w-3/4 focus:border-indigo-500 transition duration-150"
             placeholder="Votre email"
             {...field}
-           
           />
         )}
       />
@@ -86,30 +97,57 @@ export default function AvisScreen() {
             className="border border-gray-300 rounded-lg p-3 m-4 w-3/4 focus:border-indigo-500 transition duration-150"
             placeholder="Laissez votre avis ici..."
             {...field}
-           
           />
-          
         )}
-        
       />
-   <TouchableOpacity onPress={handleSubmit(onSubmit)} className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded">
-        <Text className="text-white">Envoyer l'avis</Text>
+      <TouchableOpacity
+        onPress={handleSubmit(onSubmit)}
+        className={`bg-indigo-600 hover:bg-indigo-700  font-bold py-2 px-4 rounded`}
+      >
+        <Text
+          className={`${theme === "dark" ? "text-white" : "text-black"} font-bold`}
+        >
+          Envoyer l'avis
+        </Text>
       </TouchableOpacity>
-      <View id="responseMessage" className="mt-4 w-full flex flex-col items-center">
-        {responseMessage && !error ? <Text className="text-green-600">{responseMessage}</Text> : null}
+      <View
+        id="responseMessage"
+        className="mt-4 w-full flex flex-col items-center"
+      >
+        {responseMessage && !error ? (
+          <Text className="text-green-600">{responseMessage}</Text>
+        ) : null}
         {avisList.length > 0 ? (
-          <View className="mt-6 w-3/4">
-            <Text className="text-xl font-bold mb-4">Avis reçus :</Text>
+          <View
+            className={`mt-6 w-3/4  rounded-lg p-4 `}
+          >
+            <Text
+              className={`text-xl font-bold mb-4 ${theme === "dark" ? "text-white" : "text-black"}`}
+            >
+              Avis reçus :
+            </Text>
             {avisList.map((avis) => (
-              <View key={avis.id} className="border-b border-gray-300 mb-4 pb-4">
-                <Text className="font-semibold">{avis.email} :</Text>
-                <Text className="italic">{avis.avis}</Text>
-               
+              <View
+                key={avis.id}
+                className="border-b border-gray-300 mb-4 pb-4 "
+              >
+                <Text
+                  className={`font-semibold ${theme === "dark" ? "text-white" : "text-black"}`}
+                >
+                  {avis.email} :
+                </Text>
+                <Text
+                  className={`italic ${theme === "dark" ? "text-gray-300" : "text-gray-700"}`}
+                >
+                  {avis.avis}
+                </Text>
               </View>
             ))}
           </View>
         ) : (
-          <Text className="text-gray-500">Aucun avis reçu pour le moment.</Text>
+          <Text className={`${theme === "dark" ? "text-white" : "text-black"}`}>
+            Aucun avis reçu pour le moment.
+          </Text>
         )}
         {error ? <Text className="text-red-600">{error}</Text> : null}
       </View>

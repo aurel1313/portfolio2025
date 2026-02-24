@@ -10,7 +10,7 @@ import { Text, View, useWindowDimensions } from "react-native";
 import AboutScreen from "./about";
 import BotScreen from "../views/bot/bot";
 import AvisScreen from "../views/avis/avis";
-import { use, useState, useEffect } from "react";
+import { use, useState, useEffect, useContext } from "react";
 import Modal from "@/components/modal/Modal";
 import Animated, {
   useSharedValue,
@@ -21,7 +21,8 @@ import Animated, {
 } from "react-native-reanimated";
 import Contact from "../views/contact/contact";
 import Footer from "@/components/footer/Footer";
-
+import { ThemeContext } from "../../app/Context/Theme/Theme";
+import '../../global.css';
 export default function HomeScreen() {
   const [loading, setLoading] = useState(false);
   //timeout for 3 seconds
@@ -53,11 +54,12 @@ export default function HomeScreen() {
     totalIndex: number;
   }) => {
     const color = useSharedValue("grey");
-
+    const colorDarkMode = useSharedValue("violet");
     const animatedStyle = useAnimatedStyle(() => ({
-      color: color.value,
+      //color: color.value,
       fontSize: 16,
       fontWeight: "500",
+      color: theme === "dark" ? colorDarkMode.value : color.value,
     }));
 
     useEffect(() => {
@@ -66,38 +68,53 @@ export default function HomeScreen() {
         totalIndex * 50, // Reduced delay for smoother wave
         withRepeat(withTiming("#000000", { duration: 500 }), -1, true),
       );
+      colorDarkMode.value = withDelay(
+        totalIndex * 50, // Same delay for dark mode color
+        withRepeat(withTiming("white", { duration: 500 }), -1, true),
+      );
     }, []);
 
     return <Animated.Text style={animatedStyle}>{char}</Animated.Text>;
   };
   let globaCharIndex = 0;
   const isMobile = Platform.OS === "ios" || Platform.OS === "android";
+  const context = useContext(ThemeContext);
+  if (!context) {
+    throw new Error("ThemeSwitcher must be used within a ThemeProvider");
+  }
+  const { theme, toggleTheme } = context;
   return (
-    <View className="flex flex-col z-0 overflow-scroll h-full  bg-white ">
+    <View
+      className={`flex flex-col z-0 overflow-scroll h-full   ${theme === "dark" ? "bg-gray-900 text-white" : " bg-white"} `}
+    >
       <View
-        className="
-    bg-white
+        className={`
+     
     p-4
     flex
     flex-col
+    items-center
     md:flex-row
     md:items-center
     md:justify-center
+    md:mx-auto
     md:mt-10
     md:mb-10
-    gap-10
-  "
+    
+   `}
       >
         {/* ===== TEXTE ===== */}
-        <View className="w-full md:w-1/2 md:text-center">
-          <Text className="text-base font-semibold">
+        <View className="w-1/2 md:w-1/3 flex flex-col items-center justify-center  max-sm:items-center max-sm:text-center max-sm:w-full">
+          <Text
+            className={`${theme === "dark" ? "text-white" : "text-black"}  text-2xl font-bold mb-4  `}
+          >
             Bonjour, je suis Aurélien Fabre
           </Text>
 
-          <View className="w-full flex md:items-center">
+          <View className=" flex md:items-center">
             <View
               className="
-          w-full
+         
           flex-row
           flex-wrap
           mt-4
@@ -131,27 +148,20 @@ export default function HomeScreen() {
         <View className="relative p-4">
           {/* carte derrière */}
           <View
-            className="
-        absolute
-        top-2
-        left-2
-        w-80
-        h-56
-        bg-white
-        rounded-xl
-        shadow-md
-        transform
-        -rotate-3
-      "
+            className={`absolute top-2 left-2 w-64 h-48 ${theme === "dark" ? "" : ""} rounded-xl shadow-md transform -rotate-3`}
           />
 
           {/* image principale */}
           <View
             className="
-        w-80
-        h-56
-        bg-white
-        rounded-xl
+        w-64
+        h-48
+        test
+        
+          rounded-xl
+        
+      
+       
         shadow-lg
         overflow-hidden
         transform

@@ -3,7 +3,8 @@ import { TextInput } from "react-native";
 import { GoogleGenAI } from "@google/genai";
 import { useState } from "react";
 import { BASE_URL } from "@/utils/utils";
-import { set } from "react-hook-form";
+import { useContext } from "react";
+import { ThemeContext } from "../../Context/Theme/Theme";
 export default function BotScreen() {
   const [message, setMessage] = useState("");
   const [response, setResponse] = useState("");
@@ -125,9 +126,14 @@ export default function BotScreen() {
       setIsLoading(false); // Débloquer l'interface
     }
   };
-
+  // Context pour le theme
+  const context = useContext(ThemeContext);
+  if (!context) {
+    throw new Error("Bot component must be used within a ThemeProvider");
+  }
+  const { theme } = context;
   return (
-    <View className="flex flex-col border mx-auto w-1/2 relative z-40 bg-white min-h-auto items-center justify-start pt-20 pb-10 rounded-xl shadow-lg">
+    <View className={`flex flex-col border mx-auto md:w-1/2 relative z-40 ${theme === "dark" ? "bg-gray-900" : "bg-white"} min-h-auto items-center justify-start pt-20 pb-10 rounded-xl shadow-lg`}>
       <Text className="font-bold text-2xl text-indigo-700 mb-4">
         Assistant IA
       </Text>
@@ -153,13 +159,13 @@ export default function BotScreen() {
           Requêtes restantes aujourd'hui: {remainingRequests}
         </Text>
       )*/}
-      <View className="m-4 p-4 w-3/4 border border-gray-300 rounded-lg bg-gray-50 min-h-[100px] mt-8 shadow-inner">
+      <View className={`m-4 p-4 w-3/4 border border-gray-300 rounded-lg bg-gray-50 min-h-[100px] mt-8 shadow-inner ${theme === "dark" ? "bg-gray-800 border-gray-700" : "bg-white"}`}>
         <Text className="font-semibold text-gray-800 mb-2">Réponse:</Text>
 
         {isLoading ? (
-          <Text className="text-indigo-500 animate-pulse">Chargement...</Text>
+          <Text className={`text-indigo-500 animate-pulse ${theme === "dark" ? "text-indigo-400" : ""}`}>Chargement...</Text>
         ) : (
-          <Text className="text-gray-700 whitespace-pre-wrap">
+          <Text className={`text-gray-700 whitespace-pre-wrap ${theme === "dark" ? "text-white" : ""}`}>
             {response || "En attente de votre question..."}
           </Text>
         )}
