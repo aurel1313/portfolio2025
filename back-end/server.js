@@ -17,7 +17,7 @@ import avis from "./avis/avis.js";
 import contact from "./contact/contact.js";
 import { isDevelopment } from "./utils/utils.js";
 import { genererCV, responseGeminiProjet,monProfil } from "./services/gemini/gemini.js";
-
+//import {messages} from "./messages/messages.js";
 dotenv.config();
 const app = express();
 
@@ -111,9 +111,12 @@ app.post("/gemini", async (req, res) => {
       "experience",
       "expériences",
       "expérience",
-      "compétences"
+      "compétences",
+      "profil"
     ];
+    
     const { message } = req.body; // --- Logique existante du CV ---
+   
     //const remainRequestsValue=await remainRequests();
     if (message.includes("cv")) {
       // ... (Logique CV inchangée)
@@ -127,6 +130,7 @@ app.post("/gemini", async (req, res) => {
     }else if(enums.some(enumItem => message.includes(enumItem))){
       const profil = monProfil(message);
       const result = await profil;
+      
       res.json({
         response: result.text,
         
@@ -154,6 +158,7 @@ app.post("/gemini", async (req, res) => {
 
 app.use("/avis", avis);
 app.use("/contact", contact);
+//app.use("/messages",messages);
 app.listen(PORT, () => {
   console.log(`🚀 Server running on http://localhost:${PORT}`);
 });

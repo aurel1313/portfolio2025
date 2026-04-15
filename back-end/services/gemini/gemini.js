@@ -87,7 +87,7 @@ Ne donne jamais le login sans avoir validé une adresse e-mail correcte.
       );
     }
   } catch (error) {
-    console.error("Erreur lors de la requête à Gemini :", error);
+    console.error("Erreur dans responseGeminiProjet:", error);
     throw error;
   }
 };
@@ -110,7 +110,8 @@ Lorsque l'utilisateur demande le CV, tu dois lui fournir un lien de télécharge
   return result;
 };
 const monProfil = async (message) => {
-  const systemInstructions = ai.chats.create({
+  try{
+     const systemInstructions = ai.chats.create({
     model: "gemini-2.5-flash",
     history: [
       {
@@ -156,6 +157,11 @@ Développement d’une application de recherche géographique avec le framework 
   });
   const result = await systemInstructions.sendMessage({ message: message });
   return result;
+  } catch (error) {
+    return { erreurProfil: "Désolé, une erreur est survenue lors de la récupération du profil." };
+  
+  }
+ 
 };
 
 /*const remainRequests = async () => {
