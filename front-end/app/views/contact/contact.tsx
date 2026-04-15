@@ -5,8 +5,9 @@ import { useActionState } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { BASE_URL } from "@/utils/utils";
 import { useState } from "react";
-import { ThemeContext } from "../../Context/Theme/Theme";
+import { ThemeContext } from "@/app/Context/Theme/Theme";
 import { useContext } from "react";
+import { useThemeTransition } from "@/app/Context/Theme/ThemeTransition";
 interface ContactFormData {
   name: string;
   email: string;
@@ -48,20 +49,20 @@ export default function Contact() {
       message: "",
     },
   });
-  const context = useContext(ThemeContext);
-  if (!context) {
-    throw new Error("Contact component must be used within a ThemeProvider");
+
+  const { displayedTheme } = useThemeTransition();
+  if (!displayedTheme) {
+    throw new Error("Contact component must be used within a displayedThemeProvider");
   }
-  const { theme } = context;
   return (
     <>
       <View
         id="contact"
-        className={`w-full  my-10 p-10 ${theme === "dark" ? "bg-gray-900" : "bg-white"} `}
+        className={`w-full  my-10 p-10 ${displayedTheme === "dark" ? "bg-gray-900" : "bg-white"} `}
       >
         {/* TITRE */}
         <Text
-          className={`font-bold text-xl text-center mb-6 ${theme === "dark" ? "text-white" : "text-black"}`}
+          className={`font-bold text-xl text-center mb-6 ${displayedTheme === "dark" ? "text-white" : "text-black"}`}
         >
           Contacter-moi
         </Text>
@@ -73,7 +74,7 @@ export default function Contact() {
           <View className="w-auto flex flex-col items-center gap-6 mb-10 md:mb-0">
             <View className="flex flex-col place-items-center">
               <Text
-                className={`text-lg font-semibold mb-4 ${theme === "dark" ? "text-white" : "text-black"}`}
+                className={`text-lg font-semibold mb-4 ${displayedTheme === "dark" ? "text-white" : "text-black"}`}
               >
                 Informations de contact
               </Text>
@@ -81,7 +82,7 @@ export default function Contact() {
               <View className="flex flex-row   gap-2 mb-3">
                 <Phone size={20} />
                 <Text
-                  className={`${theme === "dark" ? "text-white" : "text-black"}`}
+                  className={`${displayedTheme === "dark" ? "text-white" : "text-black"}`}
                 >
                   06 59 92 51 96
                 </Text>
@@ -90,7 +91,7 @@ export default function Contact() {
               <View className="flex flex-row items-center gap-2 mb-3">
                 <Mail size={20} />
                 <Text
-                  className={`${theme === "dark" ? "text-white" : "text-black"}`}
+                  className={`${displayedTheme === "dark" ? "text-white" : "text-black"}`}
                 >
                   aurelienfabre439@gmail.com
                 </Text>
@@ -99,7 +100,7 @@ export default function Contact() {
               <View className="flex flex-row items-center gap-2 mb-3">
                 <Building size={20} />
                 <Text
-                  className={`${theme === "dark" ? "text-white" : "text-black"}`}
+                  className={`${displayedTheme === "dark" ? "text-white" : "text-black"}`}
                 >
                   Aiffres, France
                 </Text>
@@ -110,7 +111,7 @@ export default function Contact() {
                 <Link href="https://github.com/aurel1313">
                   <Github
                     size={22}
-                    className={`${theme === "dark" ? "text-white" : "text-black"}`}
+                    className={`${displayedTheme === "dark" ? "text-white" : "text-black"}`}
                   />
                 </Link>
               </View>
@@ -118,7 +119,7 @@ export default function Contact() {
                 <Link href="https://www.linkedin.com/in/aurelien-fabre/">
                   <Linkedin
                     size={22}
-                    className={`${theme === "dark" ? "text-white" : "text-black"}`}
+                    className={`${displayedTheme === "dark" ? "text-white" : "text-black"}`}
                   />
                 </Link>
               </View>
@@ -127,11 +128,11 @@ export default function Contact() {
 
           {/* FORMULAIRE */}
           <View
-            className={`mx-auto w-1/2   border  ${theme === "dark" ? "border-gray-700" : "border-gray-200"} rounded-md `}
+            className={`mx-auto w-1/2   border  ${displayedTheme === "dark" ? "border-gray-700" : "border-gray-200"} rounded-md `}
           >
             <View className="p-4">
               <Text
-                className={`font-medium text-base mb-4 ${theme === "dark" ? "text-white" : "text-black"}`}
+                className={`font-medium text-base mb-4 ${displayedTheme === "dark" ? "text-white" : "text-black"}`}
               >
                 Envoyez-moi un message :
               </Text>
@@ -141,7 +142,7 @@ export default function Contact() {
               {/* NOM */}
               <View className="flex flex-col w-full ">
                 <Text
-                  className={`mb-1 ${theme === "dark" ? "text-white" : "text-black"}`}
+                  className={`mb-1 ${displayedTheme === "dark" ? "text-white" : "text-black"}`}
                 >
                   Nom
                 </Text>
@@ -162,7 +163,7 @@ export default function Contact() {
               {/* EMAIL */}
               <View className="flex flex-col w-full">
                 <Text
-                  className={`mb-1 ${theme === "dark" ? "text-white" : "text-black"}`}
+                  className={`mb-1 ${displayedTheme === "dark" ? "text-white" : "text-black"}`}
                 >
                   Email
                 </Text>
@@ -196,7 +197,7 @@ export default function Contact() {
               {/* SUJET */}
               <View className="mt-4">
                 <Text
-                  className={`mb-1 ${theme === "dark" ? "text-white" : "text-black"}`}
+                  className={`mb-1 ${displayedTheme === "dark" ? "text-white" : "text-black"}`}
                 >
                   Sujet
                 </Text>
@@ -217,7 +218,7 @@ export default function Contact() {
               {/* MESSAGE */}
               <View className="mt-4">
                 <Text
-                  className={`mb-1 ${theme === "dark" ? "text-white" : "text-black"}`}
+                  className={`mb-1 ${displayedTheme === "dark" ? "text-white" : "text-black"}`}
                 >
                   Message
                 </Text>
@@ -243,14 +244,14 @@ export default function Contact() {
 
               {/* BOUTON */}
               <Pressable
-                className={`mt-4  rounded-md p-3 items-center  ${theme === "dark" ? "bg-purple-700" : "bg-gray-900"} ${
+                className={`mt-4  rounded-md p-3 items-center  ${displayedTheme === "dark" ? "bg-black" : "bg-gray-300"} ${
                   !isValid ? "opacity-50" : ""
                 }`}
                 onPress={handleSubmit(onSubmit)}
                 disabled={!isValid}
               >
                 <Text
-                  className={`${theme === "dark" ? "text-white  " : "text-black"} font-bold`}
+                  className={`${displayedTheme === "dark" ? "text-white  " : "text-black"} font-bold`}
                 >
                   Envoyer le message
                 </Text>

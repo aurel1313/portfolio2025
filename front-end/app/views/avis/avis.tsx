@@ -4,7 +4,8 @@ import { Text } from "react-native";
 import { BASE_URL } from "@/utils/utils";
 import { View } from "react-native";
 import { use, useState, useEffect, useContext } from "react";
-import { ThemeContext } from "../../Context/Theme/Theme";
+
+import { useThemeTransition } from "@/app/Context/Theme/ThemeTransition";
 export default function AvisScreen() {
   //espace commentaire  pour les avis des clients
   const [responseMessage, setResponseMessage] = useState("");
@@ -17,11 +18,8 @@ export default function AvisScreen() {
 
   const [error, setError] = useState<string>("");
   const [avisList, setAvisList] = useState<Avis[]>([]);
-  const context = useContext(ThemeContext);
-  if (!context) {
-    throw new Error("Contact component must be used within a ThemeProvider");
-  }
-  const { theme } = context;
+ 
+  const { displayedTheme } = useThemeTransition();
   const {
     control,
     handleSubmit,
@@ -71,10 +69,10 @@ export default function AvisScreen() {
   }, [responseMessage]);
   return (
     <View
-      className={`p-10 flex flex-col items-center md:w-1/2 justify-center mt-12 ${theme === "dark" ? "border border-gray-700 rounded-lg bg-gray-900" : "bg-white"}`}
+      className={`p-10 flex flex-col items-center md:w-1/2 justify-center mt-12 ${displayedTheme === "dark" ? "border border-gray-700 rounded-lg bg-gray-900" : "bg-white"}`}
     >
       <Text
-        className={`text-2xl font-bold mb-4 ${theme === "dark" ? "text-white" : "text-black"}`}
+        className={`text-2xl font-bold mb-4 ${displayedTheme === "dark" ? "text-white" : "text-black"}`}
       >
         Laissez votre avis
       </Text>
@@ -105,7 +103,7 @@ export default function AvisScreen() {
         className={`bg-indigo-600 hover:bg-indigo-700  font-bold py-2 px-4 rounded`}
       >
         <Text
-          className={`${theme === "dark" ? "text-white" : "text-black"} font-bold`}
+          className={`${displayedTheme === "dark" ? "text-white" : "text-black"} font-bold`}
         >
           Envoyer l'avis
         </Text>
@@ -118,11 +116,9 @@ export default function AvisScreen() {
           <Text className="text-green-600">{responseMessage}</Text>
         ) : null}
         {avisList.length > 0 ? (
-          <View
-            className={`mt-6 w-3/4  rounded-lg p-4 `}
-          >
+          <View className={`mt-6 w-3/4  rounded-lg p-4 `}>
             <Text
-              className={`text-xl font-bold mb-4 ${theme === "dark" ? "text-white" : "text-black"}`}
+              className={`text-xl font-bold mb-4 ${displayedTheme === "dark" ? "text-white" : "text-black"}`}
             >
               Avis reçus :
             </Text>
@@ -132,12 +128,12 @@ export default function AvisScreen() {
                 className="border-b border-gray-300 mb-4 pb-4 "
               >
                 <Text
-                  className={`font-semibold ${theme === "dark" ? "text-white" : "text-black"}`}
+                  className={`font-semibold ${displayedTheme === "dark" ? "text-white" : "text-black"}`}
                 >
                   {avis.email} :
                 </Text>
                 <Text
-                  className={`italic ${theme === "dark" ? "text-gray-300" : "text-gray-700"}`}
+                  className={`italic ${displayedTheme === "dark" ? "text-gray-300" : "text-gray-700"}`}
                 >
                   {avis.avis}
                 </Text>
@@ -145,7 +141,9 @@ export default function AvisScreen() {
             ))}
           </View>
         ) : (
-          <Text className={`${theme === "dark" ? "text-white" : "text-black"}`}>
+          <Text
+            className={`${displayedTheme === "dark" ? "text-white" : "text-black"}`}
+          >
             Aucun avis reçu pour le moment.
           </Text>
         )}

@@ -1,7 +1,7 @@
 import {
-  DarkTheme,
-  DefaultTheme,
-  ThemeProvider,
+  DarkdisplayedTheme,
+  DefaultdisplayedTheme,
+  displayedThemeProvider,
 } from "@react-navigation/native";
 import { Stack } from "expo-router";
 import { StatusBar } from "expo-status-bar";
@@ -11,7 +11,7 @@ import { GlobalErrorBoundary } from "../components/GlobalErrorBoundary";
 export const unstable_settings = {
   anchor: "(tabs)",
 };
-import { ThemeContext } from "./Context/Theme/Theme";
+import { displayedThemeContext } from "./Context/displayedTheme/displayedTheme";
 export default function RootLayout() {
   const colorScheme = useColorScheme();
 

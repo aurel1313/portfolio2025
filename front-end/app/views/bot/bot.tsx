@@ -4,13 +4,16 @@ import { GoogleGenAI } from "@google/genai";
 import { useState } from "react";
 import { BASE_URL } from "@/utils/utils";
 import { useContext } from "react";
-import { ThemeContext } from "../../Context/Theme/Theme";
+import { useThemeTransition } from "@/app/Context/Theme/ThemeTransition";
 export default function BotScreen() {
   const [message, setMessage] = useState("");
   const [response, setResponse] = useState("");
   const [errorResponse, setErrorResponse] = useState(""); // État pour bloquer l'interface pendant l'appel
   const [isLoading, setIsLoading] = useState(false);
-  const[remainingRequests,setRemainingRequests]=useState<number | null>(null);
+  const [remainingRequests, setRemainingRequests] = useState<number | null>(
+    null,
+  );
+  console.log("BASE_URL utilisé pour le bot:", BASE_URL);
   const botFunction = async () => {
     // Réinitialiser les états et bloquer l'interface
     setResponse("");
@@ -30,7 +33,6 @@ export default function BotScreen() {
       // --- GESTION DES ERREURS DU SERVEUR ---
 
       if (data.error && data.response) {
-       
         try {
           // ÉTAPE 1 : On parse la première couche (le champ 'response')
           let parsedData = JSON.parse(data.response);
@@ -50,25 +52,29 @@ export default function BotScreen() {
             } catch (e) {
               // Si ce n'est pas du JSON, on garde le message tel quel
               console.log(
-                "Le message n'était pas du JSON, on le garde tel quel."
+                "Le message n'était pas du JSON, on le garde tel quel.",
               );
             }
           }
 
-         
-        //afficher l'erreur proprement
-        setErrorResponse(
-            `Erreur du serveur : ${parsedData.error.message.error.message}`
+          //afficher l'erreur proprement
+          setErrorResponse(
+            `Erreur du serveur : ${parsedData.error.message.error.message}`,
           );
-         if(parsedData.error.message  && parsedData.error.message.error.code === 429){
+          if (
+            parsedData.error.message &&
+            parsedData.error.message.error.code === 429
+          ) {
             //using setResponse to give user a friendly message
-            setErrorResponse("Vous avez dépassé votre quota actuel, veuillez reessayer plus tard.");
-         }
-       
+            setErrorResponse(
+              "Vous avez dépassé votre quota actuel, veuillez reessayer plus tard.",
+            );
+          }
         } catch (err) {
-          
           // Fallback : si le parsing échoue, on affiche ce qu'on a reçu brut
-          setErrorResponse(data.response);
+          let fallbackMessage = JSON.stringify(data);
+         console.log(fallbackMessage, "est le message brut reçu du serveur");
+          //setErrorResponse(`Erreur du serveur (format inattendu) : ${fallbackMessage.}`); // Affiche le message brut reçu du serveur
         }
 
         return;
@@ -90,17 +96,17 @@ export default function BotScreen() {
 
       if (
         currentMessage.includes("cv") ||
-        currentMessage.includes("projet") &&
-        responseToDisplay.includes("Tour 1") &&
-        responseToDisplay.includes("Tour 2")
+        (currentMessage.includes("projet") &&
+          responseToDisplay.includes("Tour 1") &&
+          responseToDisplay.includes("Tour 2"))
       ) {
         setMessage(""); // Clear the input field after initial question
         // C'est le premier tour (question initiale). On affiche le Tour 1.
         const tour1Response = responseToDisplay.split(
-          "--------------------------"
+          "--------------------------",
         )[0];
         responseToDisplay = tour1Response.trim();
-        console
+        console;
       } else if (
         currentMessage.includes("@") &&
         responseToDisplay.includes("Tour 2")
@@ -108,7 +114,7 @@ export default function BotScreen() {
         setMessage(""); // Clear the input field after email submission
         // C'est le deuxième tour (soumission de l'e-mail). On affiche le Tour 2.
         const tour2Response = responseToDisplay.split(
-          "--------------------------"
+          "--------------------------",
         )[1];
         responseToDisplay = tour2Response.trim();
       } // Si aucune condition n'est remplie (ex: simple follow-up ou message non pertinent),
@@ -120,20 +126,18 @@ export default function BotScreen() {
         setResponse(data.response);
       }
     } catch (error) {
-      
       setErrorResponse(`Erreur de connexion : ${error}`);
     } finally {
       setIsLoading(false); // Débloquer l'interface
     }
   };
-  // Context pour le theme
-  const context = useContext(ThemeContext);
-  if (!context) {
-    throw new Error("Bot component must be used within a ThemeProvider");
-  }
-  const { theme } = context;
+  // Context pour le displayedTheme
+  const { displayedTheme } = useThemeTransition();
+
   return (
-    <View className={`flex flex-col border mx-auto md:w-1/2 relative z-40 ${theme === "dark" ? "bg-gray-900" : "bg-white"} min-h-auto items-center justify-start pt-20 pb-10 rounded-xl shadow-lg`}>
+    <View
+      className={`flex flex-col border mx-auto md:w-1/2 relative z-40 ${displayedTheme === "dark" ? "bg-gray-900" : "bg-white"} min-h-auto items-center justify-start pt-20 pb-10 rounded-xl shadow-lg`}
+    >
       <Text className="font-bold text-2xl text-indigo-700 mb-4">
         Assistant IA
       </Text>
@@ -159,13 +163,21 @@ export default function BotScreen() {
           Requêtes restantes aujourd'hui: {remainingRequests}
         </Text>
       )*/}
-      <View className={`m-4 p-4 w-3/4 border border-gray-300 rounded-lg bg-gray-50 min-h-[100px] mt-8 shadow-inner ${theme === "dark" ? "bg-gray-800 border-gray-700" : "bg-white"}`}>
+      <View
+        className={`m-4 p-4 w-3/4 border border-gray-300 rounded-lg bg-gray-50 min-h-[100px] mt-8 shadow-inner ${displayedTheme === "dark" ? "bg-gray-800 border-gray-700" : "bg-white"}`}
+      >
         <Text className="font-semibold text-gray-800 mb-2">Réponse:</Text>
 
         {isLoading ? (
-          <Text className={`text-indigo-500 animate-pulse ${theme === "dark" ? "text-indigo-400" : ""}`}>Chargement...</Text>
+          <Text
+            className={`text-indigo-500 animate-pulse ${displayedTheme === "dark" ? "text-indigo-400" : ""}`}
+          >
+            Chargement...
+          </Text>
         ) : (
-          <Text className={`text-gray-700 whitespace-pre-wrap ${theme === "dark" ? "text-white" : ""}`}>
+          <Text
+            className={`text-gray-700 whitespace-pre-wrap ${displayedTheme === "dark" ? "text-white" : ""}`}
+          >
             {response || "En attente de votre question..."}
           </Text>
         )}
