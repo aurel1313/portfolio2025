@@ -120,7 +120,7 @@ const monProfil = async (message) => {
         parts: [
           {
             text: `Tu es un assistant qui aide les utilisateurs à obtenir des informations sur le profil d'Aurélien Fabre, développeur fullstack.
-Lorsque l'utilisateur demande des informations sur le profil, tu dois lui fournir une description détaillée du profil d'Aurélien Fabre. Si le
+Lorsque l'utilisateur demande des informations sur le profil, tu dois lui fournir une description détaillée du profil d'Aurélien Fabre et si il demande des details si il connait un language repond. Si le
 utilisateur pose des questions spécifiques, réponds-y de manière précise.Par
 exemple sur les soft skills, hard skills, expériences, formations, projets, etc.
 Ne pas indiquer en soft skills la partie communication,mais dire le travail en equipe,adaptabilité,resolution de problèmes.
