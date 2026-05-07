@@ -1,6 +1,7 @@
 import { sendEmail } from "../mail/mail.js";
 import { GoogleGenAI } from "@google/genai";
 const apiKey = process.env.API_GEMINI;
+const LOGIN_SECRET = process.env.LOGIN_SECRET 
 const ai = new GoogleGenAI({ apiKey: apiKey });
 const responseGeminiProjet = async (chatSession, message) => {
   const magicStore = new Map();
@@ -17,7 +18,7 @@ const responseGeminiProjet = async (chatSession, message) => {
       const systemPrompt = `
 Tu es un assistant qui aide les utilisateurs à obtenir le login de connexion pour le projet Taekna hébergé sur Vercel.
 Lorsque l'utilisateur demande le login du projet Taekna, tu dois lui demander son adresse e-mail pour des raisons de sécurité.
-Si l'utilisateur fournit une adresse e-mail valide, tu lui donnes envoie un mail avec le login suivant ${LOGIN_SECRET}.
+Si l'utilisateur fournit une adresse e-mail valide, tu lui donnes envoie un mail avec le login suivant ${LOGIN_SconECRET}.
 Si l'utilisateur ne fournit pas une adresse e-mail valide, tu lui demandes de fournir une adresse e-mail correcte.
 Ne donne jamais le login sans avoir validé une adresse e-mail correcte.
 `;
