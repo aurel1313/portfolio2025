@@ -13,7 +13,7 @@ export default function BotScreen() {
   const [remainingRequests, setRemainingRequests] = useState<number | null>(
     null,
   );
-  console.log("BASE_URL utilisé pour le bot:", BASE_URL);
+  
   const botFunction = async () => {
     // Réinitialiser les états et bloquer l'interface
     setResponse("");
@@ -31,13 +31,29 @@ export default function BotScreen() {
 
       const data = await res.json();
       // --- GESTION DES ERREURS DU SERVEUR ---
-
-      if (data.error && data.response) {
+      if(data.response){
+        try {
+          // si c'est un lien, ouvrir le lien dans une nouvelle fenêtre
+          if (data.response.startsWith("http")) {
+            window.open(data.response, "_blank");
+            setResponse("Le téléchargement de votre CV a démarré.");
+            return;
+          }
+        } catch (e) {
+         //renvoyer une erreur si le lien n'est pas valide
+          setErrorResponse("Le lien fourni par le serveur est invalide.");
+          return;
+           
+        }
+      }
+      /*if (data.error || data.response) {
         try {
           // ÉTAPE 1 : On parse la première couche (le champ 'response')
           let parsedData = JSON.parse(data.response);
+          console.log(parsedData, "est le message après le premier parsing");
           //setRemainingRequests(data.remainingRequests || null);
           // ÉTAPE 2 : On regarde si 'message' à l'intérieur est aussi une string JSON
+          
           if (
             parsedData.error &&
             parsedData.error.message &&
@@ -78,24 +94,15 @@ export default function BotScreen() {
         }
 
         return;
-      }
+      }*/
 
-      if (data.link) {
-        // Cette logique utilise les APIs du DOM (navigateur) pour le téléchargement.
-        const link = document.createElement("a");
-        link.href = data.link; // Utiliser data.link directement
-        link.download = "CVDevFullstackAurelienFabre.pdf";
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-        setResponse("Le téléchargement de votre CV a démarré.");
-        return;
-      } // --- LOGIQUE DE PARSING MULTI-TOURS (VOTRE CODE) ---
+     // --- LOGIQUE DE PARSING MULTI-TOURS (VOTRE CODE) ---
 
       let responseToDisplay = data.response; // Réponse brute du serveur
-
+      let contentQuestions = ["cv", "projet", "profil", "experience", "formation", "language"]; // Mots-clés pour identifier le premier tour
       if (
         currentMessage.includes("cv") ||
+        contentQuestions.some((q) => currentMessage.includes(q)) &&
         (currentMessage.includes("projet") &&
           responseToDisplay.includes("Tour 1") &&
           responseToDisplay.includes("Tour 2"))
@@ -108,7 +115,7 @@ export default function BotScreen() {
         responseToDisplay = tour1Response.trim();
         console;
       } else if (
-        currentMessage.includes("@") &&
+        currentMessage.includes("@") || contentQuestions.some((q) => currentMessage.includes(q)) &&
         responseToDisplay.includes("Tour 2")
       ) {
         setMessage(""); // Clear the input field after email submission

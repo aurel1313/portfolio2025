@@ -17,13 +17,13 @@ export default function RootLayout() {
 
   return (
     <>
-      <GlobalErrorBoundary>
+     
       
           <Stack>
             <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
           </Stack>
         
-      </GlobalErrorBoundary>
+      
     </>
   );
 }

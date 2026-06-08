@@ -21,8 +21,7 @@ export default function AboutScreen() {
         signal: controller.signal,
       });
       const data = await res.json();
-      console.log("data", data);
-      
+
       //get url for project stage
       let url = data.latestDeployments;
 
@@ -33,17 +32,15 @@ export default function AboutScreen() {
         ? first.alias[0]
         : `https://${first.alias[0]}`;
       setUrl(projectUrl);
-      
+      console.log("URL du projet de stage :", projectUrl);
     } catch (error) {
-      if(error instanceof DOMException && error.name === 'AbortError') {
-        console.log('Requête annulée');
+      if (error instanceof DOMException && error.name === "AbortError") {
+        console.log("Requête annulée");
       } else {
         throw error;
       }
     }
   };
-
-
 
   useEffect(() => {
     projetStage();
@@ -62,8 +59,14 @@ export default function AboutScreen() {
         id="about"
         className={`  p-4 flex flex-col items-center text-[20px] w-full justify-center  max-sm:items-center max-sm:justify-center max-sm:mt-10 max-sm:mb-10 `}
       >
-        <Text className={`text-${theme === 'dark' ? 'gray-500' : 'black'} text-2xl font-bold mb-4  `}>A propos de moi</Text>
-        <Text className={`text-${theme === 'dark' ? 'gray-500' : 'gray-500'} font-sans text-xl text-wrap w-1/2  p-4 max-sm:font-sans max-sm:w-full max-sm:text-center max-sm:text-[16px] `}>
+        <Text
+          className={`text-${theme === "dark" ? "gray-500" : "black"} text-2xl font-bold mb-4  `}
+        >
+          A propos de moi
+        </Text>
+        <Text
+          className={`text-${theme === "dark" ? "gray-500" : "gray-500"} font-sans text-xl text-wrap w-1/2  p-4 max-sm:font-sans max-sm:w-full max-sm:text-center max-sm:text-[16px] `}
+        >
           Passionné par le développement web et mobile, je suis constamment à la
           recherche de nouvelles technologies et de défis à relever. Mon
           objectif est de créer des applications performantes, intuitives et
@@ -74,13 +77,18 @@ export default function AboutScreen() {
         id="projects"
         className="p-10 flex flex-col items-center w-3/4  mx-auto"
       >
-        <Text className={`text-${theme === 'dark' ? 'white' : 'black'} text-2xl font-bold mb-4 `}>Projets</Text>
-        <Text className={`text-${theme === 'dark' ? 'gray-500' : 'gray-500'} font-sans text-xl  text-wrap w-1/2 p-4 max-sm:w-full max-sm:text-center max-sm:text-[16px] max-sm:font-sans max-sm:mb-10`}>
+        <Text
+          className={`text-${theme === "dark" ? "white" : "black"} text-2xl font-bold mb-4 `}
+        >
+          Projets
+        </Text>
+        <Text
+          className={`text-${theme === "dark" ? "gray-500" : "gray-500"} font-sans text-xl  text-wrap w-1/2 p-4 max-sm:w-full max-sm:text-center max-sm:text-[16px] max-sm:font-sans max-sm:mb-10`}
+        >
           Developpeur avec 3 ans d'experience, je transforme les idées en
           solutions digitales innovantes et performantes
         </Text>
-       
-        
+
         <View className="flex flex-row place-content-center w-1/3    max-md:flex max-md:flex-col max-md:items-center max-md:justify-center ">
           <Card
             title="developpement front-end"
@@ -95,19 +103,29 @@ export default function AboutScreen() {
             description="Conception d'expériences utilisateur intuitives avec une approche centrée sur l'utilisateur et les meilleures pratiques du design.."
           />
         </View>
-    
-        <View className="mt-10 w-full  relative   max-sm:w-full max-sm:p-4 ">
-          <Text className={`text-2xl font-bold mb-4 ${theme === 'dark' ? 'text-white' : 'text-black'} `}>Projet de stage</Text>
-          <View className=" w-full  rounded-lg p-4">
-            <Text className={` font-sans text-xl font-light text-wrap w-full p-4 ${theme === 'dark' ? 'text-gray-300' : 'text-gray-500'}`}>
+
+        <View className="mt-10 h-auto w-full">
+          <Text
+            className={`text-2xl font-bold mb-4 ${theme === "dark" ? "text-white" : "text-black"}`}
+          >
+            Projet de stage
+          </Text>
+
+          {/* On enlève le p-4 ici pour ne pas réduire la largeur */}
+          <View className="w-full max-w-4xl mx-auto px-4">
+            {/* On remplace p-4 par mb-4 (margin-bottom) pour garder un espace sous le texte sans le décaler sur les côtés */}
+            <Text
+              className={`font-sans text-xl font-light mb-4 ${theme === "dark" ? "text-gray-300" : "text-gray-500"}`}
+            >
               Voici un aperçu de mon projet de stage déployé sur Vercel :
             </Text>
+
             {url ? (
               <iframe
                 src={url}
-                className="w-full h-96 border border-gray-300 bg-white rounded-lg"
+                className="w-full h-[600px] bg-white rounded-lg shadow-sm border border-gray-200"
                 title="Projet de stage"
-              ></iframe>
+              />
             ) : (
               <Text>Loading...</Text>
             )}
@@ -116,5 +134,4 @@ export default function AboutScreen() {
       </View>
     </>
   );
-  
 }

@@ -6,7 +6,7 @@
         "start:front-end": "cd front-end && npm start",
         "start:back-end": "cd back-end && nodemon server.js",
         "startMobile": "concurrently --raw --handle-input \"cd front-end && npx expo start \" \"npm run start:back-end\"",
-        "startAll": "concurrently  \"cd front-end && npx expo start \" \"cd back-end && nodemon server.js\""
+        "startAll": "concurrently  \"cd front-end && npx expo start \" \"cd back-end && npm run dev\""
     },
     "devDependencies": {
         "concurrently": "^9.2.1"

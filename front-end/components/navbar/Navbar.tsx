@@ -4,10 +4,11 @@ import { Moon, Sun } from "lucide-react-native";
 import { useThemeTransition } from "@/app/Context/Theme/ThemeTransition";
 import { useWindowDimensions } from "react-native";
 import { MessageCircle } from "lucide-react-native";
-export const Navbar = ({openChat, setOpenChat}) => {
+import { LogIn } from "lucide-react-native";
+export const Navbar = ({ openChat, setOpenChat }) => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [darkMode, setDarkMode] = useState(false);
- 
+
   const window = useWindowDimensions();
   const windowsWidth = window.width;
   const { displayedTheme, switchThemeWithAnimation } = useThemeTransition();
@@ -20,9 +21,9 @@ export const Navbar = ({openChat, setOpenChat}) => {
   const handleMenuClick = () => {
     setMenuOpen(!menuOpen);
   };
- const MenuMessage = () => {
+  const MenuMessage = () => {
     setOpenChat(!openChat);
-  }
+  };
 
   return (
     <View
@@ -40,7 +41,7 @@ export const Navbar = ({openChat, setOpenChat}) => {
               >
                 Portfolio
               </Text>
-               
+
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
@@ -56,7 +57,7 @@ export const Navbar = ({openChat, setOpenChat}) => {
                   d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"
                 />
               </svg>
-               
+
               <View className="ml-4 cursor-pointer">
                 {darkMode ? (
                   <Sun size={20} onPress={toggledisplayedTheme} />
@@ -64,15 +65,11 @@ export const Navbar = ({openChat, setOpenChat}) => {
                   <Moon size={20} onPress={toggledisplayedTheme} />
                 )}
               </View>
-            
             </View>
-            
           ) : null}
         </View>
         {menuOpen && Platform.OS === "web" && window.width < 768 ? (
           <View className="flex flex-row md:flex-row md:space-x-6 text-sm  ">
-   
-
             <a href="#home">Accueil</a>
             <a href="#about" className="ml-4">
               A propos
@@ -112,7 +109,12 @@ export const Navbar = ({openChat, setOpenChat}) => {
                 <Moon size={20} onPress={toggledisplayedTheme} />
               )}
             </View>
-                <MessageCircle size={20} className="ml-4 cursor-pointer" onPress={MenuMessage} />
+            <MessageCircle
+              size={20}
+              className="ml-4 cursor-pointer"
+              onPress={MenuMessage}
+            />
+            <LogIn size={20} className="ml-4 cursor-pointer" />
           </View>
         )}
 

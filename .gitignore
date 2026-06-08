@@ -1,0 +1,8 @@
+node_modules
+// fichiers env//
+.env
+.env.local
+.env.development
+.env.test
+// nodes_modules
+/node_modules
